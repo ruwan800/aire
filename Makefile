@@ -32,10 +32,13 @@ edge.o: $(SOURCES)
 	
 log.o: $(SOURCES)
 	g++ -Wall $(CFLAGS) -c -o ${BUILD_DIR}/log.o src/log.cpp
+	
+io.o: $(SOURCES)
+	g++ -Wall $(CFLAGS) -c -o ${BUILD_DIR}/io.o src/io.cpp
 
 
-libaire.so: video.o motion.o cammotion.o edge.o log.o
-	g++ -Wall -shared ${BUILD_DIR}/cammotion.o ${BUILD_DIR}/motion.o ${BUILD_DIR}/video.o ${BUILD_DIR}/edge.o ${BUILD_DIR}/log.o -o ${BUILD_DIR}/libaire.so $(LIBS)
+libaire.so: video.o motion.o cammotion.o edge.o log.o io.o
+	g++ -Wall -shared ${BUILD_DIR}/cammotion.o ${BUILD_DIR}/motion.o ${BUILD_DIR}/video.o ${BUILD_DIR}/edge.o ${BUILD_DIR}/log.o ${BUILD_DIR}/io.o -o ${BUILD_DIR}/libaire.so $(LIBS)
 
 
 install:

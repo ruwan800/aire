@@ -25,11 +25,12 @@ void Log::addToLog(message msg) {
 	m_log.push_back(msg);
 }
 
-void Log::print(char* t_type, char* t_cat, char* t_val) {
+void Log::print(string t_type, string t_cat, string t_val) {
 	cout << t_type << " :: " << t_cat << " :: " << t_val << endl ;
 }
 
-void Log::process(char* t_type, char* t_cat, char* t_val ){
+
+void Log::process(string t_type, string t_cat, string t_val ){
 	message msg;
 	msg.m_type = t_type;
 	msg.m_category = t_cat;
@@ -56,6 +57,26 @@ void Log::i(char* cat, char* val){
 
 void Log::w(char* cat, char* val){
 	char x[] = "w";
+	process(x, cat, val );
+}
+
+void Log::e(string cat, string val){
+	string x = "e";
+	process(x, cat, val );
+}
+
+void Log::d(string cat, string val){
+	string x = "d";
+	process(x, cat, val );
+}
+
+void Log::i(string cat, string val){
+	string x = "i";
+	process(x, cat, val );
+}
+
+void Log::w(string cat, string val){
+	string x = "w";
 	process(x, cat, val );
 }
 

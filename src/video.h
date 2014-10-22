@@ -24,13 +24,13 @@ public:
 	std::vector<cv::Mat> getFrames(int, int);
 	cv::Mat getFrame(int);
 	Log LOG;
+	const char* video_file;
 private:
 	cv::VideoCapture capture;
 	cv::Mat frame_set[2][100];
 	int loaded_frames;
 	int video_size;
 	bool video_load_complete;
-	const char* video_file;
 	void loadVideo();
 	void loadInitialFrames();
 	void loadFrames(int);

@@ -6,10 +6,13 @@
  */
 
 #include "motion.h"
+#include "io.h"
 #include <iostream>
 #include <stdio.h>
+#include <string>
 
 using namespace std;
+using namespace cv;
 
 namespace aire {
 
@@ -117,8 +120,45 @@ void Motion::createCameraMotionImages(const char* src_dir){
 	}
 }
 
-void loadCameraMotionFromFile(const char* src_file){
 
+void Motion::createCameraMotionGraphs(){
+	IO io = IO(video);
+	string imdir = "camera_motion_graphs";
+	io.createDirectory(imdir);
+	string image_dir = io.project_dir+"/"+imdir;
+	vector<int> cc = io.readIntVector("camera_changes.txt");
+	vector<Scalar> cm = io.readScalarVector("camera_motion.txt");
+	int previous = 0;
+	for ( int i = 0; i < (int) cc.size()+1; ++i) {
+		Mat m(Size(800, 640), CV_8UC3);
+		line(m, Point(10,10), Point(10,212), Scalar(255,255,255), 1);
+		line(m, Point(10,220), Point(10,422), Scalar(255,255,255), 1);
+		line(m, Point(10,430), Point(10,632), Scalar(255,255,255), 1);
+
+		line(m, Point(10,110), Point(790,110), Scalar(255,255,255), 1);
+		line(m, Point(10,320), Point(790,320), Scalar(255,255,255), 1);
+		line(m, Point(10,530), Point(790,530), Scalar(255,255,255), 1);
+		Scalar sc0 = cm.at(0);
+		int currrent;
+		if(i == cc.size()){
+			currrent = cm.size();
+		}
+		else{
+			currrent = cc.at(i);
+		}
+		for ( int j = 1; j < currrent -previous; ++j) {
+			if(192 < currrent-previous)break;
+			Scalar sc1 = cm.at(previous+j);
+			for (int k = 0; k < 3; ++k) {
+				line(m, Point(10+((j-1)*4), ((k*210)+110)-(2*sc0[k])), Point(10+(j*4), ((k*210)+110)-(2*sc1[k])), Scalar(0,0,200+abs(sc0[k])), 2);
+			}
+			sc0 = sc1;
+		}
+		char x[200];
+		sprintf(x, (image_dir+"/%03d.png").c_str(),i);
+		imwrite(x, m);
+		if(i != cc.size()) previous = cc.at(i);
+	}
 }
 
 } /* namespace aire */

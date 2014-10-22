@@ -25,6 +25,7 @@ public:
 	std::vector<cv::Scalar> findCameraMotion();
 	void createCameraMotionImages(const char*);
 	void loadCameraMotionFromFile(const char*);
+	void createCameraMotionGraphs();
 private:
 	Video video;
 	Log LOG;
