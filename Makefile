@@ -7,7 +7,7 @@ LIBDIR=/usr/lib
 
 BUILD_DIR = build
 
-SOURCES=src/video.cpp src/video.h
+#SOURCES=src/video.cpp src/video.h
 
 
 
@@ -35,10 +35,13 @@ log.o: $(SOURCES)
 	
 io.o: $(SOURCES)
 	g++ -Wall $(CFLAGS) -c -o ${BUILD_DIR}/io.o src/io.cpp
+	
+premining.o: $(SOURCES)
+	g++ -Wall $(CFLAGS) -c -o ${BUILD_DIR}/premining.o src/premining.cpp
 
 
-libaire.so: video.o motion.o cammotion.o edge.o log.o io.o
-	g++ -Wall -shared ${BUILD_DIR}/cammotion.o ${BUILD_DIR}/motion.o ${BUILD_DIR}/video.o ${BUILD_DIR}/edge.o ${BUILD_DIR}/log.o ${BUILD_DIR}/io.o -o ${BUILD_DIR}/libaire.so $(LIBS)
+libaire.so: video.o motion.o cammotion.o edge.o log.o io.o premining.o
+	g++ -Wall -shared ${BUILD_DIR}/cammotion.o ${BUILD_DIR}/motion.o ${BUILD_DIR}/video.o ${BUILD_DIR}/edge.o ${BUILD_DIR}/log.o ${BUILD_DIR}/io.o ${BUILD_DIR}/premining.o -o ${BUILD_DIR}/libaire.so $(LIBS)
 
 
 install:
