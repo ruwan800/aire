@@ -24,6 +24,7 @@ namespace aire {
 
 class IO {
 public:
+	IO();
 	IO(string);
 	IO(Video);
 	virtual ~IO();

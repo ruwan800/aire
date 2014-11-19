@@ -20,6 +20,8 @@ using namespace cv;
 
 namespace aire {
 
+IO::IO() {
+}
 
 IO::IO(string str) {
 	project_dir = str.substr(0,str.rfind("."));
