@@ -4,7 +4,7 @@
  *  Created on: Jul 25, 2014
  *      Author: ruwan
  */
-#include<opencv2/core/core.hpp>
+#include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "video.h"

@@ -18,7 +18,8 @@ namespace aire {
 class Video {
 public:
 	Video();
-	Video(const char* video_file);
+	Video(bool);
+	Video(const char* video_file, bool);
 	virtual ~Video();
 	int size();
 	std::vector<cv::Mat> getFrames(int, int);
@@ -31,6 +32,7 @@ private:
 	int loaded_frames;
 	int video_size;
 	bool video_load_complete;
+	bool adjust_resolution;
 	void loadVideo();
 	void loadInitialFrames();
 	void loadFrames(int);

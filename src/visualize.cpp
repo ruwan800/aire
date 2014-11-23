@@ -36,11 +36,10 @@ void Visualize::createCameraMotionImages(Video video){
 	io.createDirectory(imdir);
 	string image_dir = io.project_dir+"/"+imdir;
 
-	if(! camera_changes.size()){
-		findCameraMotion();
+	if(! camera_movements.size()){
+		loadCameraMotionFromFile();
 	}
 	for (int i = 1; i < (int)camera_movements.size(); ++i) {
-		//std::cout << i << "/" << camera_movements.size()-1 << std::endl;//####
 		cv::Scalar point = camera_movements.at(i);
 		int Zcol = point[0];
 		int Zrow = point[1];
@@ -78,30 +77,27 @@ void Visualize::createCameraMotionImages(Video video){
 		}
 
 		cv::Mat output;
-		string new_string = string(3 - itoa (i,buffer,10).length(), '0') + i;
-		std::ostringstream ss;
-		ss << std::setw(5) << std::setfill('0') << 12 << "\n";
-		std::string s2(ss.str());
-		char imf[200];
-		sprintf(imf,"%s/%%03d.png",(const char*)image_dir);
-
-		sprintf(imf,imf,i);
+		char imf[7];
+		sprintf(imf,"%03d.png",i);
+		image_dir = image_dir + imf;
 		cv::bitwise_and(src1,src2,output);
-		cv::imwrite(imf,output);
+		cv::imwrite(image_dir,output);
 	}
 }
-void Visualize::createCameraMotionGraphs(){
-	vector<int> cc = io.readIntVector("camera_changes.txt");
-	vector<Scalar> cm = io.readScalarVector("camera_motion.txt");
-	Visualize::createCameraMotionGraphs(cc, cm);
-}
 
-void Visualize::createCameraMotionGraphs(vector<int> cc, vector<Scalar> cm){
+void Visualize::createCameraMotionGraphs(){
+
+	if(! camera_changes.size()){
+		loadCameraChangeFromFile();
+	}
+	if(! camera_movements.size()){
+		loadCameraMotionFromFile();
+	}
 	string imdir = "camera_motion_graphs";
 	io.createDirectory(imdir);
 	string image_dir = io.project_dir+"/"+imdir;
 	int previous = 0;
-	for ( int i = 0; i < (int) cc.size()+1; ++i) {
+	for ( int i = 0; i < (int) camera_changes.size()+1; ++i) {
 		Mat m(Size(800, 640), CV_8UC3);
 		line(m, Point(10,10), Point(10,212), Scalar(255,255,255), 1);
 		line(m, Point(10,220), Point(10,422), Scalar(255,255,255), 1);
@@ -110,17 +106,17 @@ void Visualize::createCameraMotionGraphs(vector<int> cc, vector<Scalar> cm){
 		line(m, Point(10,110), Point(790,110), Scalar(255,255,255), 1);
 		line(m, Point(10,320), Point(790,320), Scalar(255,255,255), 1);
 		line(m, Point(10,530), Point(790,530), Scalar(255,255,255), 1);
-		Scalar sc0 = cm.at(0);
+		Scalar sc0 = camera_movements.at(0);
 		int currrent;
-		if(i == cc.size()){
-			currrent = cm.size();
+		if(i == (int) camera_changes.size()){
+			currrent = camera_movements.size();
 		}
 		else{
-			currrent = cc.at(i);
+			currrent = camera_changes.at(i);
 		}
 		for ( int j = 1; j < currrent -previous; ++j) {
 			if(192 < currrent-previous)break;
-			Scalar sc1 = cm.at(previous+j);
+			Scalar sc1 = camera_movements.at(previous+j);
 			for (int k = 0; k < 3; ++k) {
 				line(m, Point(10+((j-1)*4), ((k*210)+110)-(2*sc0[k])), Point(10+(j*4), ((k*210)+110)-(2*sc1[k])), Scalar(0,0,200+abs(sc0[k])), 2);
 			}
@@ -129,8 +125,21 @@ void Visualize::createCameraMotionGraphs(vector<int> cc, vector<Scalar> cm){
 		char x[200];
 		sprintf(x, (image_dir+"/%03d.png").c_str(),i);
 		imwrite(x, m);
-		if(i != cc.size()) previous = cc.at(i);
+		if(i != (int) camera_changes.size()) previous = (int) camera_changes.at(i);
 	}
 }
+
+
+
+
+
+void Visualize::loadCameraChangeFromFile(){
+	camera_changes = io.readIntVector("camera_changes.txt");
+}
+
+void Visualize::loadCameraMotionFromFile(){
+	camera_movements = io.readScalarVector("camera_motion.txt");
+}
+
 
 } /* namespace aire */

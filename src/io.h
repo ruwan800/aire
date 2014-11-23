@@ -34,6 +34,7 @@ public:
 	void write(vector<int>, string);
 	void setProjectDirectory(string);
 	void createDirectory(string);
+	void splitVideoFile(Video video, vector<int> cc);
 	string project_dir;
 private:
 	string aire_dir;

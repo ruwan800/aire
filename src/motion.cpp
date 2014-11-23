@@ -47,15 +47,12 @@ std::vector<int> Motion::findCameraChanges() {
 		if( 20 < m[1][0] -m[0][0] && 20 < m[1][0] - m[2][0] && 10 < i+1-last_value){
 			camPoints.push_back(i+1);
 			last_value = i+1;
-			char output[200];
-			sprintf(output,"Camera Change: Frame:%2d",i+1);
-			LOG.i("output",output);
-			char d_output[200];
-			sprintf(d_output,"%2.3f, %2.3f, %2.3f, ",m[0][0], m[1][0], m[2][0]);
-			LOG.d("camera_change",d_output);
+			LOG.i("output",format("Camera Change: Frame: %4d",i+1));
+			LOG.d("camera_change",format("%2.3f, %2.3f, %2.3f, ",m[0][0], m[1][0], m[2][0]));
 			//std::cout << i+1 << "::" << m[0] << m[1] << m[2] << std::endl;//####
 		}
 	}
+	camPoints.push_back(video.size()-1);
 	camera_changes = camPoints;
 	return camPoints;
 }
@@ -69,7 +66,7 @@ std::vector<cv::Scalar> Motion::findCameraMotion(){
 	return camera_movements;
 }
 
-
+/*
 void Motion::createCameraMotionImages(const char* src_dir){
 
 	if(! camera_changes.size()){
@@ -121,8 +118,9 @@ void Motion::createCameraMotionImages(const char* src_dir){
 		cv::imwrite(imf,output);
 	}
 }
+*/
 
-
+/*
 void Motion::createCameraMotionGraphs(){
 	IO io = IO(video);
 	string imdir = "camera_motion_graphs";
@@ -162,5 +160,7 @@ void Motion::createCameraMotionGraphs(){
 		if(i != cc.size()) previous = cc.at(i);
 	}
 }
+*/
+
 
 } /* namespace aire */

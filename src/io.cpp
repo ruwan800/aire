@@ -7,6 +7,7 @@
 
 #include "video.h"
 #include "io.h"
+#include "objects.h"
 #include <stdio.h>
 #include <sys/stat.h>
 #include <iostream>
@@ -128,4 +129,34 @@ vector<String> IO::readFromFile(string filename){
 	result.pop_back();
 	return result;
 }
+
+void IO::splitVideoFile(Video video, vector<int> cc){
+	string vfile = (string)video.video_file;
+	string dir_name = "video_temp";
+	string temp_dir = project_dir+"/"+dir_name;
+	char command[100];
+	sprintf(command,"rm -rf %s",temp_dir.c_str());
+	system( command);
+	createDirectory(dir_name);
+
+	int prev = 0;
+	int curr;
+	for (int i = 1; i < (int)cc.size(); ++i) {
+		curr = cc.at(i);
+		int len = curr - prev;
+		char numb[10];
+		sprintf(numb,"%06d.mp4",i);
+		char start[20];
+		sprintf(start,"%02d:%02d:%02d.%03d",prev/(25*60*60),(prev%(25*60*60))/(25*60),(prev%(25*60))/25,(prev%25)*40);
+		char finish[20];
+		sprintf(finish,"%02d:%02d:%02d.%03d",len/(25*60*60),(len%(25*60*60))/(25*60),(len%(25*60))/25,(len%25)*40);
+		char command[400];
+		sprintf(command,"avconv -i %s -ss %s -t %s -acodec copy -vcodec copy %s/%s",
+						vfile.c_str(),start,finish,temp_dir.c_str(),numb);
+		cout << command << endl;//####
+		system(command);
+		prev = curr;
+	}
+}
+
 } /* namespace aire */

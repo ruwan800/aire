@@ -13,8 +13,17 @@ using namespace cv;
 
 namespace aire {
 
-
 Video::Video(){
+	adjust_resolution = false;
+	video_size = 0;
+	video_load_complete=false;
+	loaded_frames = 0;
+	video_file = "";
+	LOG = Log();
+}
+
+Video::Video(bool adjust){
+	adjust_resolution = adjust;
 	video_size = 0;
 	video_load_complete=false;
 	loaded_frames = 0;
@@ -23,7 +32,8 @@ Video::Video(){
 }
 
 
-Video::Video(const char* vf) {
+Video::Video(const char* vf, bool adjust) {
+	adjust_resolution = adjust;
 	video_file = vf;
 	video_size = 0;
 	loadVideo();
@@ -33,11 +43,12 @@ Video::Video(const char* vf) {
 }
 
 
+
 Video::~Video(){}
 
 
 int Video::size(){
-	return video_size+1;
+	return video_size;
 }
 
 void Video::loadVideo(){
@@ -48,6 +59,7 @@ void Video::loadVideo(){
 		cout << "Video::Video::failed to open '" << video_file << "'." << endl;
 		return;
 	}
+	video_size = capture.get(CV_CAP_PROP_FRAME_COUNT);
 }
 
 std::vector<cv::Mat> Video::getFrames(int begin, int end){
@@ -130,11 +142,16 @@ void Video::load100Frames(){
 			video_load_complete = true;
 			break;
 		}
-		Mat new_frame;
-		resize(frame,new_frame,Size(frame.cols*400/frame.rows,400),0,0,INTER_CUBIC);
-		frame_set[1][i] = new_frame;
-		if(video_size < loaded_frames+i){
-			video_size = loaded_frames+i;
+		if(adjust_resolution){
+			Mat new_frame;
+			resize(frame,new_frame,Size(frame.cols*400/frame.rows,400),0,0,INTER_CUBIC);
+			frame_set[1][i] = new_frame;
+		}
+		else{
+			frame_set[1][i] = frame;
+		}
+		if(video_size-1 < loaded_frames+i){
+			video_size = loaded_frames+i+1;
 		}
 	}
 	loaded_frames += 100;

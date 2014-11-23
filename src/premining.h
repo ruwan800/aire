@@ -7,6 +7,7 @@
 
 
 #include<opencv2/core/core.hpp>
+#include "io.h"
 
 #ifndef PREMINING_H_
 #define PREMINING_H_
@@ -19,10 +20,16 @@ namespace aire {
 
 class PreMining {
 public:
-	PreMining();
+	PreMining(IO);
+	PreMining(string);
 	virtual ~PreMining();
-	vector<Scalar> processCameraMotion(vector<Scalar>, vector<int>);
+	vector<Scalar> processCameraMotion();
+	vector<int> * splitPoints(vector<int>*);
+	vector<vector<string> > findCameraMotionClass();
 private:
+	IO io;
+	vector<int> cc;
+	vector<Scalar> cm;
 
 };
 
