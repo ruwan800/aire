@@ -82,7 +82,7 @@ vector<int> * PreMining::splitPoints(vector<int>* points){
 	return points;
 }
 
-vector<vector<string> > PreMining::findCameraMotionClass(){
+vector<vector<int> > PreMining::findCameraMotionClass(vector<int> cc, vector<Scalar> cm){
 	int previous = 0;
 	int current;
 	vector<vector<vector<int> > > regionset;
@@ -124,59 +124,67 @@ vector<vector<string> > PreMining::findCameraMotionClass(){
 		if(i != (int) cc.size()) previous = (int) cc.at(i);
 	}
 
-	vector<vector<string> > result;
-	vector<string> m_result;
+	vector<vector<int> > result;
+	vector<int> m_result;
 	for (int i = 0; i < 3; ++i) {
 		result.push_back(m_result);
 	}
+	/* +-HL = 0
+	 *  +HL = 1
+	 *  -HL = 2
+	 *   0L = 3
+	 *  +LL = 4
+	 *  -LL = 5
+	 *  +HS = 6
+	 *  -HS = 7
+	 * +-LS = 8
+	 *  +LS = 9
+	 *  -LS =10
+	 *   0S =11
+	 *  ANY =12
+	 */
 	for (int i = 0; i < (int)regionset.size(); ++i) {
 		for (int j = 0; j < 3; ++j) {
-			string val;
+			int val;
 			int count = 0;
 			if(10 <= regionset.at(i).at(j).at(4) && 10 <= regionset.at(i).at(j).at(0)){
-				val += "+-HL";
+				val =0;
 			}
 			else if(50 <= regionset.at(i).at(j).at(4)){
-				val += "+HL";
+				val =1;
 			}
 			else if(50 <= regionset.at(i).at(j).at(0) ){
-				val += "-HL";
+				val =2;
 			}
 			else if(50 <= regionset.at(i).at(j).at(2) ){
-				val += "0L";
+				val =3;
 			}
 			else if(50 <= regionset.at(i).at(j).at(3) ){
-				val += "+LL";
-				count += 2;
+				val =4;
 			}
 			else if(50 <= regionset.at(i).at(j).at(1) ){
-				val += "-LL";
-				count += 2;
+				val =5;
 			}
 			else if(10 <= regionset.at(i).at(j).at(4) ){
-				val += "+HS";
+				val =6;
 			}
 			else if(10 <= regionset.at(i).at(j).at(0) ){
-				val += "-HS";
+				val =7;
 			}
 			else if(10 <= regionset.at(i).at(j).at(3) && 10 <= regionset.at(i).at(j).at(1) ){
-				val += "+-LS";
-				count += 2;
+				val =8;
 			}
 			else if(10 <= regionset.at(i).at(j).at(3) && regionset.at(i).at(j).at(3) < 50 && count == 0){
-				val += "+LS";
-				count ++;
+				val =9;
 			}
 			else if(10 <= regionset.at(i).at(j).at(1) && regionset.at(i).at(j).at(1) < 50 && count == 0){
-				val += "-LS";
-				count ++;
+				val =10;
 			}
 			else if(10 <= regionset.at(i).at(j).at(2) && regionset.at(i).at(j).at(2) < 50 && count == 0){
-				val += "0S";
-				count ++;
+				val =11;
 			}
 			else if(count == 0){
-				val += "ANY";
+				val =12;
 			}
 			result[j].push_back(val);
 		}

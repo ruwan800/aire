@@ -25,7 +25,7 @@ public:
 	virtual ~PreMining();
 	vector<Scalar> processCameraMotion();
 	vector<int> * splitPoints(vector<int>*);
-	vector<vector<string> > findCameraMotionClass();
+	vector<vector<int> > findCameraMotionClass(vector<int> cc, vector<Scalar> cm);
 private:
 	IO io;
 	vector<int> cc;
