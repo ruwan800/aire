@@ -151,7 +151,7 @@ void IO::splitVideoFile(Video video, vector<int> cc){
 		char finish[20];
 		sprintf(finish,"%02d:%02d:%02d.%03d",len/(25*60*60),(len%(25*60*60))/(25*60),(len%(25*60))/25,(len%25)*40);
 		char command[400];
-		sprintf(command,"avconv -i %s -ss %s -t %s -acodec copy -vcodec copy %s/%s",
+		sprintf(command,"avconv -i %s -ss %s -t %s -acodec copy -vcodec libx264 %s/%s",
 						vfile.c_str(),start,finish,temp_dir.c_str(),numb);
 		cout << command << endl;//####
 		system(command);
