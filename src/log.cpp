@@ -26,7 +26,13 @@ void Log::addToLog(message msg) {
 }
 
 void Log::print(string t_type, string t_cat, string t_val) {
-	cout << t_type << " :: " << t_cat << " :: " << t_val << endl ;
+	if(log_enabled){
+		cout << t_type << " :: " << t_cat << " :: " << t_val << endl ;
+	}
+}
+
+void Log::setEnabled(bool enabled){
+	log_enabled = enabled;
 }
 
 

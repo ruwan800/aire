@@ -25,6 +25,10 @@ PreMining::PreMining(string str) {
 	cm = io.readScalarVector("camera_motion.txt");
 }
 
+
+PreMining::PreMining() {
+}
+
 PreMining::~PreMining() {
 	// TODO Auto-generated destructor stub
 }

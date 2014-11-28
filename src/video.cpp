@@ -14,23 +14,7 @@ using namespace cv;
 namespace aire {
 
 Video::Video(){
-	adjust_resolution = false;
-	video_size = 0;
-	video_load_complete=false;
-	loaded_frames = 0;
-	video_file = "";
-	LOG = Log();
 }
-
-Video::Video(bool adjust){
-	adjust_resolution = adjust;
-	video_size = 0;
-	video_load_complete=false;
-	loaded_frames = 0;
-	video_file = "";
-	LOG = Log();
-}
-
 
 Video::Video(const char* vf, bool adjust) {
 	adjust_resolution = adjust;
@@ -41,6 +25,18 @@ Video::Video(const char* vf, bool adjust) {
 	LOG = Log();
 
 }
+
+
+/*Video::Video(bool adjust){
+	adjust_resolution = adjust;
+	video_size = 0;
+	video_load_complete=false;
+	loaded_frames = 0;
+	video_file = "";
+	LOG = Log();
+}*/
+
+
 
 
 
@@ -148,7 +144,7 @@ void Video::load100Frames(){
 			frame_set[1][i] = new_frame;
 		}
 		else{
-			frame_set[1][i] = frame;
+			frame_set[1][i] = frame.clone();
 		}
 		if(video_size-1 < loaded_frames+i){
 			video_size = loaded_frames+i+1;

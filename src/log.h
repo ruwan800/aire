@@ -26,12 +26,14 @@ public:
 	void d(string, string);
 	void i(string, string);
 	void w(string, string);
+	void setEnabled(bool enabled);
 private:
 	struct message {
 	  string m_type;
 	  string m_category;
 	  string m_value;
 	};
+	bool log_enabled;
 	std::vector<message> m_log;
 	void addToLog(message);
 	void print(string, string, string);

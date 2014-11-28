@@ -20,6 +20,7 @@ namespace aire {
 
 class PreMining {
 public:
+	PreMining();
 	PreMining(IO);
 	PreMining(string);
 	virtual ~PreMining();

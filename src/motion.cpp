@@ -31,10 +31,13 @@ std::vector<int> Motion::findCameraChanges() {
 	camPoints.push_back(0);
 	int last_value = 0;
 
+	int real_frames = 0;
 	for (int i = 2; i < (int)video.size()-2; ++i) {
 		//std::cout << i << "/" << frames.size()-4 << std::endl;//####
 		cv::Scalar m[3];
 		std::vector<cv::Mat> frames = video.getFrames(i-2,i+3);
+		real_frames = i+2;
+		if(frames.at(4).empty())break;
 		for (int j = 0; j < 3; ++j) {
 			cv::Mat d0,d1,r0,gray,thresh;
 			cv::absdiff(frames.at(j), frames.at(j+2), d0);
@@ -52,7 +55,9 @@ std::vector<int> Motion::findCameraChanges() {
 			//std::cout << i+1 << "::" << m[0] << m[1] << m[2] << std::endl;//####
 		}
 	}
-	camPoints.push_back(video.size()-1);
+	if(10 < real_frames - last_value){
+		camPoints.push_back(real_frames);
+	}
 	camera_changes = camPoints;
 	return camPoints;
 }

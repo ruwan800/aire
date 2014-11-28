@@ -18,7 +18,6 @@ namespace aire {
 class Video {
 public:
 	Video();
-	Video(bool);
 	Video(const char* video_file, bool);
 	virtual ~Video();
 	int size();

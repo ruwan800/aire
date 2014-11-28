@@ -32,17 +32,18 @@ std::vector<cv::Scalar> CameraMotion::findCameraMotion() {
 		//std::cout << i << "/" << frames.size()-1 << std::endl;//####
 		if(std::find(camera_changes.begin(), camera_changes.end(), i) == camera_changes.end()){
 			std::vector<cv::Mat> frames = video.getFrames(i-1,i+1);
+			if(frames.at(1).empty())break;
 			frame1 = frames.at(0);
 			frame2 = frames.at(1);
 			cp = findCameraPoint(cp);
 			point_set.push_back(cp);
 			char output[200];
 			sprintf(output,"X:%3d, Y:%3d, Z:%3d",(int)cp.val[0],(int)cp.val[1],(int)cp.val[2]);
-			LOG.i("output",output);
+			LOG.i("output",string(output));
 		}else{
 			cp = cv::Scalar(0,0,0);
 			point_set.push_back(cp);
-			LOG.i("output","X:  0, Y:  0, Z:  0");
+			LOG.i("output",string("X:  0, Y:  0, Z:  0"));
 		}
 	}
 	camera_movements = point_set;
