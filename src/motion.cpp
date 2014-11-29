@@ -30,6 +30,7 @@ std::vector<int> Motion::findCameraChanges() {
 	std::vector<int> camPoints;
 	camPoints.push_back(0);
 	int last_value = 0;
+	int threshold_value = 65;
 
 	int real_frames = 0;
 	for (int i = 2; i < (int)video.size()-2; ++i) {
@@ -47,7 +48,7 @@ std::vector<int> Motion::findCameraChanges() {
 			threshold(gray, thresh, 10, 255, CV_THRESH_BINARY);
 			m[j] = cv::mean(thresh);
 		}
-		if( 20 < m[1][0] -m[0][0] && 20 < m[1][0] - m[2][0] && 10 < i+1-last_value){
+		if( threshold_value < m[1][0] -m[0][0] && threshold_value < m[1][0] - m[2][0] && 10 < i+1-last_value){
 			camPoints.push_back(i+1);
 			last_value = i+1;
 			LOG.i("output",format("Camera Change: Frame: %4d",i+1));
@@ -55,7 +56,7 @@ std::vector<int> Motion::findCameraChanges() {
 			//std::cout << i+1 << "::" << m[0] << m[1] << m[2] << std::endl;//####
 		}
 	}
-	if(10 < real_frames - last_value){
+	if(10 < real_frames - last_value || last_value == 0){
 		camPoints.push_back(real_frames);
 	}
 	camera_changes = camPoints;

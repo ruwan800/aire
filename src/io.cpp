@@ -141,7 +141,7 @@ void IO::splitVideoFile(Video video, vector<int> cc){
 
 	int prev = 0;
 	int curr;
-	for (int i = 1; i < (int)cc.size()-1; ++i) {
+	for (int i = 1; i < (int)cc.size(); ++i) {
 		curr = cc.at(i);
 		int len = curr - prev;
 		char numb[10];

@@ -90,7 +90,8 @@ vector<vector<int> > PreMining::findCameraMotionClass(vector<int> cc, vector<Sca
 	int previous = 0;
 	int current;
 	vector<vector<vector<int> > > regionset;
-	for ( int i = 0; i < (int) cc.size()+1; ++i) {
+
+	for ( int i = 1; i < (int) cc.size(); ++i) {
 		vector<int> m_regions;
 		for (int k = 0; k < 5; ++k) {
 			m_regions.push_back(0);
@@ -99,7 +100,7 @@ vector<vector<int> > PreMining::findCameraMotionClass(vector<int> cc, vector<Sca
 		for (int j = 0; j < 3; ++j) {
 			regions.push_back(m_regions);
 		}
-		current = (i != (int) cc.size()) ? cc.at(i) : cm.size();
+		current = cc.at(i);
 		for ( int j = previous; j < current; ++j) {
 			for (int k = 0; k < 3; ++k) {
 				int val = cm.at(j)[k];
@@ -125,14 +126,10 @@ vector<vector<int> > PreMining::findCameraMotionClass(vector<int> cc, vector<Sca
 
 		regionset.push_back(regions);
 
-		if(i != (int) cc.size()) previous = (int) cc.at(i);
+		previous = (int) cc.at(i);
 	}
 
 	vector<vector<int> > result;
-	vector<int> m_result;
-	for (int i = 0; i < 3; ++i) {
-		result.push_back(m_result);
-	}
 	/* +-HL = 0
 	 *  +HL = 1
 	 *  -HL = 2
@@ -148,6 +145,7 @@ vector<vector<int> > PreMining::findCameraMotionClass(vector<int> cc, vector<Sca
 	 *  ANY =12
 	 */
 	for (int i = 0; i < (int)regionset.size(); ++i) {
+		vector<int> m_result;
 		for (int j = 0; j < 3; ++j) {
 			int val;
 			int count = 0;
@@ -190,8 +188,9 @@ vector<vector<int> > PreMining::findCameraMotionClass(vector<int> cc, vector<Sca
 			else if(count == 0){
 				val =12;
 			}
-			result[j].push_back(val);
+			m_result.push_back(val);
 		}
+		result.push_back(m_result);
 	}
 	return result;
 }
