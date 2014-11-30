@@ -63,12 +63,10 @@ std::vector<cv::Mat> Video::getFrames(int begin, int end){
 	std::vector<cv::Mat> result;
 	int complete = 0;
 	if(60 < end - begin){
-		cout << "Video::getFrames::too much frames requested at once." << endl;
 	}
 	if(begin < 0 || size() < end){
-		cout << "Video::getFrames::requested out of existing frames range." << endl;
 	}
-	if(size() <= end+40){
+	if(loaded_frames <= end+40){
 		loadFrames(end);
 	}
 	if(loaded_frames <= end){
@@ -77,7 +75,6 @@ std::vector<cv::Mat> Video::getFrames(int begin, int end){
 	if(begin < loaded_frames-200){
 		loadFrames(begin);
 	}
-
 	for (int i = 0; i < 2; ++i) {
 		if(begin-end == complete) {break; }
 		for (int j = complete; j < end-begin; ++j) {
@@ -156,7 +153,7 @@ void Video::load100Frames(){
 
 void Video::loadFrames(int start){
 	//cout << "@Video::loadFrames: "<< start << endl;  //#####
-	while(start+100 < loaded_frames-200 || loaded_frames < start+100){
+	while(start+100 <= loaded_frames-200 || loaded_frames < start+100){
 		if(loaded_frames < start+100){
 			if(video_load_complete){break;}
 			for (int i = 0; i < 100; ++i) {		//TODO make this efficient
@@ -164,7 +161,7 @@ void Video::loadFrames(int start){
 			}
 			load100Frames();
 		}
-		else if(start < loaded_frames-200){
+		else if(start <= loaded_frames-200){
 			loadVideo();
 			loadInitialFrames();
 		}
