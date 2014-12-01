@@ -31,6 +31,7 @@ public:
 	vector<Scalar> readScalarVector(string);
 	vector<int> readIntVector(string);
 	void write(vector<Scalar>, string);
+	void write(vector<string>, string);
 	void write(vector<int>, string);
 	void setProjectDirectory(string);
 	void createDirectory(string);

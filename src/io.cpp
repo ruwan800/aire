@@ -106,13 +106,30 @@ void IO::write(vector<int> data, string filename){
 	writeToFile(filename, content.str());
 }
 
+void IO::write(vector<string> data, string filename){
+	stringstream content;
+	for (int i = 0; i < (int) data.size(); ++i) {
+		content << data.at(i) << "\n";
+	}
+	writeToFile(filename, content.str());
+}
+
 
 void IO::writeToFile(string filename, string content ){
-	LOG.d("write",project_dir+"/"+filename);
-	ofstream f;
-	f.open((project_dir+"/"+filename).c_str(), std::fstream::out);
-	f << content;
-	f.close();
+	if(filename.find("/") != std::string::npos){
+		LOG.d("write",filename);
+		ofstream f;
+		f.open((filename).c_str(), std::fstream::out);
+		f << content;
+		f.close();
+	}
+	else{
+		LOG.d("write",project_dir+"/"+filename);
+		ofstream f;
+		f.open((project_dir+"/"+filename).c_str(), std::fstream::out);
+		f << content;
+		f.close();
+	}
 }
 
 vector<String> IO::readFromFile(string filename){
