@@ -14,7 +14,9 @@ using namespace cv;
 
 namespace aire {
 
-Edge::Edge(Video vid) {
+Edge::Edge(Video vid)
+	:video(vid)
+{
 	video = vid;
 	LOG = vid.LOG;
 }
@@ -30,8 +32,8 @@ std::vector<float> Edge::getEdgeVariation() {
 	int kernel_size = 3;
 	int lowThreshold = 50;
 	for (int i = 0; i < (int)video.size(); ++i) {
+
 		Mat src = video.getFrame(i);
-		if(src.empty())break;
 		cvtColor( src, gray, CV_BGR2GRAY );
 		/// Reduce noise with a kernel 3x3
 		blur( gray, blured, Size(3,3) );
@@ -77,9 +79,9 @@ std::vector<std::vector<float> > Edge::getSectionEdgeVariation() {
 			}
 			char output[200];
 			sprintf(output,"%5.2f    %5.2f    %5.2f    %5.2f",edge_values[0],edge_values[1],edge_values[2],edge_values[3]);
-			LOG.i("output",output);
+			LOG.i("output",string(output));
 		}
-		LOG.i("output","");
+		LOG.i("output",string(""));
 		section_edge_changes.push_back(sections);
 	}
 	return section_edge_changes;

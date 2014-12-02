@@ -17,14 +17,15 @@ namespace aire {
 
 class Video {
 public:
-	Video();
-	Video(const char* video_file, bool);
+	//Video();
+	//Video(bool);
+	Video(string video_file, bool);
 	virtual ~Video();
 	int size();
 	std::vector<cv::Mat> getFrames(int, int);
 	cv::Mat getFrame(int);
 	Log LOG;
-	const char* video_file;
+	string video_file;
 private:
 	cv::VideoCapture capture;
 	cv::Mat frame_set[2][100];

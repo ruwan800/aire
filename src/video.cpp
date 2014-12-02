@@ -13,17 +13,16 @@ using namespace cv;
 
 namespace aire {
 
-Video::Video(){
-}
+//Video::Video(){
+//}
 
-Video::Video(const char* vf, bool adjust) {
+Video::Video(string vf, bool adjust) {
 	adjust_resolution = adjust;
 	video_file = vf;
 	video_size = 0;
 	loadVideo();
 	loadInitialFrames();
 	LOG = Log();
-
 }
 
 
@@ -50,7 +49,7 @@ int Video::size(){
 void Video::loadVideo(){
 	video_load_complete = false;
 	loaded_frames = 0;
-	capture = VideoCapture(video_file);	// open video file
+	capture = VideoCapture(video_file.c_str());	// open video file
 	if(!capture.isOpened()){  			// check if we succeeded
 		cout << "Video::Video::failed to open '" << video_file << "'." << endl;
 		return;
@@ -63,10 +62,12 @@ std::vector<cv::Mat> Video::getFrames(int begin, int end){
 	std::vector<cv::Mat> result;
 	int complete = 0;
 	if(60 < end - begin){
+		cout << "Video::getFrames::too much frames requested at once." << endl;
 	}
 	if(begin < 0 || size() < end){
+		cout << "Video::getFrames::requested out of existing frames range." << endl;
 	}
-	if(loaded_frames <= end+40){
+	if(size() <= end+40){
 		loadFrames(end);
 	}
 	if(loaded_frames <= end){
@@ -153,6 +154,7 @@ void Video::load100Frames(){
 
 void Video::loadFrames(int start){
 	//cout << "@Video::loadFrames: "<< start << endl;  //#####
+	//while(start+100 < loaded_frames-200 || loaded_frames < start+100){
 	while(start+100 <= loaded_frames-200 || loaded_frames < start+100){
 		if(loaded_frames < start+100){
 			if(video_load_complete){break;}
@@ -161,6 +163,7 @@ void Video::loadFrames(int start){
 			}
 			load100Frames();
 		}
+		//else if(start < loaded_frames-200){
 		else if(start <= loaded_frames-200){
 			loadVideo();
 			loadInitialFrames();

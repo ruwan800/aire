@@ -14,15 +14,12 @@
 #include <string>
 #include <sstream>
 #include <fstream>
-#include<opencv2/core/core.hpp>
+#include <opencv2/core/core.hpp>
 
 using namespace std;
 using namespace cv;
 
 namespace aire {
-
-IO::IO() {
-}
 
 IO::IO(string str) {
 	project_dir = str.substr(0,str.rfind("."));
@@ -48,10 +45,25 @@ IO::~IO() {
 
 void IO::checkDir(string pathname){
 	struct stat info;
-	if( stat( pathname.c_str(), &info ) != 0 ){
-		LOG.d("create_directory",pathname);
-		mkdir(pathname.c_str(), 0777);
+	if( stat( project_dir.c_str(), &info ) != 0 ){
+		LOG.d("create_directory",project_dir);
+		mkdir(project_dir.c_str(), 0777);
 	}
+	string fullpath = project_dir+"/"+pathname;
+	struct stat info1;
+	if( stat( fullpath.c_str(), &info1 ) != 0 ){
+		LOG.d("create_directory",fullpath);
+		mkdir(fullpath.c_str(), 0777);
+	}
+}
+
+bool IO::isExists(string pathname){
+	string fullpath = project_dir+"/"+pathname;
+	struct stat info;
+	if( stat( fullpath.c_str(), &info ) != 0 ){
+		return false;
+	}
+	return true;
 }
 
 void IO::createDirectory(string pathname){
@@ -61,6 +73,13 @@ void IO::createDirectory(string pathname){
 		LOG.d("create_directory",real_dir);
 		mkdir(real_dir.c_str(), 0777);
 	}
+}
+
+void IO::cleanDirectory(string pathname){
+	string temp_dir = project_dir+"/"+pathname;
+	char command[100];
+	sprintf(command,"rm -rf %s",temp_dir.c_str());
+	system(command);
 }
 
 vector<Scalar> IO::readScalarVector(string filename){
@@ -151,9 +170,7 @@ void IO::splitVideoFile(Video video, vector<int> cc){
 	string vfile = (string)video.video_file;
 	string dir_name = "video_temp";
 	string temp_dir = project_dir+"/"+dir_name;
-	char command[100];
-	sprintf(command,"rm -rf %s",temp_dir.c_str());
-	system( command);
+	cleanDirectory(dir_name);
 	createDirectory(dir_name);
 
 	int prev = 0;
@@ -174,6 +191,17 @@ void IO::splitVideoFile(Video video, vector<int> cc){
 		system(command);
 		prev = curr;
 	}
+}
+
+void IO::createAudioFile(Video video){
+	string vfile = (string)video.video_file;
+	string dir_name = "audio";
+	string temp_dir = project_dir+"/"+dir_name;
+	char command[100];
+	sprintf(command,"rm -rf %s",temp_dir.c_str());
+	system( command);
+	createDirectory(dir_name);
+
 }
 
 } /* namespace aire */

@@ -13,10 +13,11 @@ using namespace std;
 
 namespace aire {
 
-CameraMotion::CameraMotion(Video vid, std::vector<int> cc) {
+CameraMotion::CameraMotion(Video vid, std::vector<int> m_cc)
+	: video(vid)
+{
 	mean_min = 10000;
-	video = vid;
-	camera_changes = cc;
+	cc = m_cc;
 	Log LOG = video.LOG;
 }
 
@@ -30,9 +31,8 @@ std::vector<cv::Scalar> CameraMotion::findCameraMotion() {
 	std::vector<cv::Scalar> point_set;
 	for (int i = 1; i < video.size(); ++i) {
 		//std::cout << i << "/" << frames.size()-1 << std::endl;//####
-		if(std::find(camera_changes.begin(), camera_changes.end(), i) == camera_changes.end()){
+		if(std::find(cc.begin(), cc.end(), i) == cc.end()){
 			std::vector<cv::Mat> frames = video.getFrames(i-1,i+1);
-			if(frames.at(1).empty())break;
 			frame1 = frames.at(0);
 			frame2 = frames.at(1);
 			cp = findCameraPoint(cp);
@@ -46,7 +46,7 @@ std::vector<cv::Scalar> CameraMotion::findCameraMotion() {
 			LOG.i("output",string("X:  0, Y:  0, Z:  0"));
 		}
 	}
-	camera_movements = point_set;
+	cm = point_set;
 	return point_set;
 }
 

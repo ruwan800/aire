@@ -24,8 +24,8 @@ public:
 private:
 	Video video;
 	Log LOG;
-	std::vector<int> camera_changes;
-	std::vector<cv::Scalar> camera_movements;
+	std::vector<int> cc;
+	std::vector<cv::Scalar> cm;
 	float mean_min;
 	cv::Mat frame1;
 	cv::Mat frame2;

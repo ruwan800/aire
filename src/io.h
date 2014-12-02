@@ -24,7 +24,6 @@ namespace aire {
 
 class IO {
 public:
-	IO();
 	IO(string);
 	IO(Video);
 	virtual ~IO();
@@ -35,12 +34,15 @@ public:
 	void write(vector<int>, string);
 	void setProjectDirectory(string);
 	void createDirectory(string);
+	void cleanDirectory(string pathname);
 	void splitVideoFile(Video video, vector<int> cc);
+	void createAudioFile(Video video);
 	string project_dir;
 private:
 	string aire_dir;
 	void writeToFile(string, string);
 	void checkDir(string);
+	bool isExists(string pathname);
 	vector<String> readFromFile(string);
 	Log LOG;
 
