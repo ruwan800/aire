@@ -6,6 +6,7 @@
  */
 #include "video.h"
 #include <stdio.h>
+#include <dirent.h>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -36,13 +37,16 @@ public:
 	void createDirectory(string);
 	void cleanDirectory(string pathname);
 	void splitVideoFile(Video video, vector<int> cc);
-	void createAudioFile(Video video);
+	string createAudioFile(string video_file);
+	vector<string> getSubDirs(string folderPath);
+	vector<string> getDirFiles(string folderPath);
 	string project_dir;
 private:
 	string aire_dir;
 	void writeToFile(string, string);
 	void checkDir(string);
 	bool isExists(string pathname);
+	string getAbsPath(string path);
 	vector<String> readFromFile(string);
 	Log LOG;
 

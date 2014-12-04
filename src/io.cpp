@@ -49,7 +49,7 @@ void IO::checkDir(string pathname){
 		LOG.d("create_directory",project_dir);
 		mkdir(project_dir.c_str(), 0777);
 	}
-	string fullpath = project_dir+"/"+pathname;
+	string fullpath  = getAbsPath(pathname);
 	struct stat info1;
 	if( stat( fullpath.c_str(), &info1 ) != 0 ){
 		LOG.d("create_directory",fullpath);
@@ -58,7 +58,7 @@ void IO::checkDir(string pathname){
 }
 
 bool IO::isExists(string pathname){
-	string fullpath = project_dir+"/"+pathname;
+	string fullpath = getAbsPath(pathname);
 	struct stat info;
 	if( stat( fullpath.c_str(), &info ) != 0 ){
 		return false;
@@ -68,7 +68,7 @@ bool IO::isExists(string pathname){
 
 void IO::createDirectory(string pathname){
 	struct stat info;
-	string real_dir = project_dir+"/"+pathname;
+	string real_dir = getAbsPath(pathname);
 	if( stat( real_dir.c_str(), &info ) != 0 ){
 		LOG.d("create_directory",real_dir);
 		mkdir(real_dir.c_str(), 0777);
@@ -76,10 +76,17 @@ void IO::createDirectory(string pathname){
 }
 
 void IO::cleanDirectory(string pathname){
-	string temp_dir = project_dir+"/"+pathname;
+	string temp_dir = getAbsPath(pathname);
 	char command[100];
 	sprintf(command,"rm -rf %s",temp_dir.c_str());
 	system(command);
+}
+
+string IO::getAbsPath(string path){
+	if(path[0] == '/' || path[0] == '~'){
+		return path;
+	}
+	return project_dir+"/"+path;
 }
 
 vector<Scalar> IO::readScalarVector(string filename){
@@ -193,15 +200,69 @@ void IO::splitVideoFile(Video video, vector<int> cc){
 	}
 }
 
-void IO::createAudioFile(Video video){
-	string vfile = (string)video.video_file;
+string IO::createAudioFile(string video_file){
 	string dir_name = "audio";
 	string temp_dir = project_dir+"/"+dir_name;
+	string audio_file = temp_dir+"/audio.wav";
+	if(isExists(audio_file)) return audio_file;
+	createDirectory(temp_dir);
 	char command[100];
-	sprintf(command,"rm -rf %s",temp_dir.c_str());
-	system( command);
-	createDirectory(dir_name);
+	sprintf(command,"avconv -i %s  %s",video_file.c_str(),audio_file.c_str());
+	system(command);
+	LOG.i(string("audio"), command);
+	return audio_file;
 
 }
+
+
+
+vector<string> IO::getSubDirs(string folderPath){
+	vector<string> dirs;
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir (folderPath.c_str())) != NULL) {
+	  /* print all the files and directories within directory */
+
+		while ((ent = readdir (dir)) != NULL) {
+			struct stat st;
+			lstat(ent->d_name, &st);
+			if(string(ent->d_name).length() < 3){
+				continue;
+			}
+			if(S_ISDIR(st.st_mode)){
+				dirs.push_back(folderPath +"/"+string(ent->d_name) );
+			}
+		}
+	}
+	return dirs;
+}
+
+vector<string> IO::getDirFiles(string folderPath){
+	vector<string> dirs;
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir (folderPath.c_str())) != NULL) {
+	  /* print all the files and directories within directory */
+
+		while ((ent = readdir (dir)) != NULL) {
+			string dirfile = ent->d_name;
+			if(dirfile.length() < 3){
+				continue;
+			}
+			struct stat st;
+			lstat(dirfile.c_str(), &st);
+			/*if(! S_ISDIR(st.st_mode)){
+				continue;
+			}*/
+			unsigned int found=dirfile.find(".");
+			if (found==std::string::npos){
+				continue;
+			}
+			dirs.push_back(folderPath +"/"+string(ent->d_name) );
+		}
+	}
+	return dirs;
+}
+
 
 } /* namespace aire */

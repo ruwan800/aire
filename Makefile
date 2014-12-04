@@ -2,6 +2,14 @@ CC=g++
 C_INCLUDES=`pkg-config --cflags opencv`
 CFLAGS=$(C_INCLUDES) -g
 LIBS=`pkg-config --libs opencv`
+
+CLAM_CFLAGS=`pkg-config clam_core clam_processing clam_audioio --cflags` -g
+CFLAG_VALS=	-DCLAM_FLOAT -DUSE_XERCES=1 -DCLAM_USE_XML -DUSE_LADSPA=1 -DUSE_SNDFILE=1\
+			-DUSE_OGGVORBIS=1 -DWITH_VORBIS=1 -DUSE_MAD=1 -DWITH_MAD=1\
+ 			-DUSE_ID3=1 -DUSE_ALSA=1 -DUSE_JACK=1 -DUSE_PORTAUDIO=1 -DUSE_FFTW3=1
+
+CLAM_LIBS=`pkg-config clam_core clam_processing clam_audioio --libs`
+
 LIBDIR=/usr/lib
 
 BUILD_DIR = build
@@ -39,8 +47,11 @@ visualize.o: $(SOURCES)
 	
 objects.o: $(SOURCES)
 	g++ -Wall $(CFLAGS) -c -o ${BUILD_DIR}/objects.o src/objects.cpp
+	
+sound.o: $(SOURCES)
+	g++ -Wall $(CLAM_CFLAGS) -c -o ${BUILD_DIR}/sound.o src/sound.cpp
 
-libaire.so: video.o motion.o cammotion.o edge.o log.o io.o premining.o visualize.o objects.o
+libaire.so: video.o motion.o cammotion.o edge.o log.o io.o premining.o visualize.o objects.o sound.o
 	g++ -Wall -shared \
 	${BUILD_DIR}/cammotion.o \
 	${BUILD_DIR}/motion.o \
@@ -51,7 +62,8 @@ libaire.so: video.o motion.o cammotion.o edge.o log.o io.o premining.o visualize
 	${BUILD_DIR}/premining.o \
 	${BUILD_DIR}/visualize.o \
 	${BUILD_DIR}/objects.o \
-	-o ${BUILD_DIR}/libaire.so $(LIBS)
+	${BUILD_DIR}/sound.o \
+	-o ${BUILD_DIR}/libaire.so $(LIBS) $(CLAM_LIBS)
 
 
 install:
