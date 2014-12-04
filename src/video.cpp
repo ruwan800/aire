@@ -54,7 +54,7 @@ void Video::loadVideo(){
 		cout << "Video::Video::failed to open '" << video_file << "'." << endl;
 		return;
 	}
-	video_size = capture.get(CV_CAP_PROP_FRAME_COUNT);
+	//video_size = capture.get(CV_CAP_PROP_FRAME_COUNT);
 }
 
 std::vector<cv::Mat> Video::getFrames(int begin, int end){
