@@ -24,6 +24,7 @@ public:
 	int size();
 	std::vector<cv::Mat> getFrames(int, int);
 	cv::Mat getFrame(int);
+	int getFrameRate();
 	Log LOG;
 	string video_file;
 private:
@@ -31,6 +32,7 @@ private:
 	cv::Mat frame_set[2][100];
 	int loaded_frames;
 	int video_size;
+	int frame_rate;
 	bool video_load_complete;
 	bool adjust_resolution;
 	void loadVideo();

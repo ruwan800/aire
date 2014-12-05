@@ -36,7 +36,7 @@ public:
 	void setProjectDirectory(string);
 	void createDirectory(string);
 	void cleanDirectory(string pathname);
-	void splitVideoFile(Video video, vector<int> cc);
+	void splitVideoFile(Video video, vector<int> cc, bool createall);
 	string createAudioFile(string video_file);
 	vector<string> getSubDirs(string folderPath);
 	vector<string> getDirFiles(string folderPath);

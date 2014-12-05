@@ -31,7 +31,7 @@ std::vector<int> Motion::findCameraChanges() {
 	std::vector<int> camPoints;
 	camPoints.push_back(0);
 	int last_value = 0;
-	int threshold_value = 65;
+	int threshold_value = 24;
 
 	for (int i = 2; i < (int)video.size()-2; ++i) {
 		//std::cout << i << "/" << frames.size()-4 << std::endl;//####

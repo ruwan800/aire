@@ -24,7 +24,6 @@ namespace aire {
 IO::IO(string str) {
 	project_dir = str.substr(0,str.rfind("."));
 	LOG = Log();
-	checkDir(project_dir);
 }
 
 IO::IO(Video vid) {
@@ -36,7 +35,6 @@ IO::IO(Video vid) {
 	string str = (string)vid.video_file;
 	project_dir = str.substr(0,str.rfind("."));
 	LOG = Log();
-	checkDir(project_dir);
 }
 
 IO::~IO() {
@@ -84,8 +82,31 @@ void IO::cleanDirectory(string pathname){
 
 string IO::getAbsPath(string path){
 	if(path[0] == '/' || path[0] == '~'){
+		unsigned int found=path.find(project_dir);
+		if (found!=string::npos){
+			string str = path;
+			string str1 = path;
+			unsigned int newpos = 0;
+			unsigned int pos = 0;
+			while(true){
+				pos = str.find(string("/"));
+				if (pos == string::npos) break;
+				newpos += pos+1;
+				struct stat info;
+				str = str.substr (pos+1);
+				str1 = path.substr (0, newpos);
+				if( stat( str.c_str(), &info ) != 0 ){
+					struct stat info;
+					if( stat( str1.c_str(), &info ) != 0 ){
+						LOG.d("create_directory",str1);
+						mkdir(str1.c_str(), 0777);
+					}
+				}
+			}
+		}
 		return path;
 	}
+	checkDir(project_dir);
 	return project_dir+"/"+path;
 }
 
@@ -173,24 +194,29 @@ vector<String> IO::readFromFile(string filename){
 	return result;
 }
 
-void IO::splitVideoFile(Video video, vector<int> cc){
+void IO::splitVideoFile(Video video, vector<int> cc, bool createall){
+	if(!createall && cc.size() == 2){
+		LOG.i("IO",string("no camera changes:: ")+video.video_file);
+		return;
+	}
 	string vfile = (string)video.video_file;
 	string dir_name = "video_temp";
 	string temp_dir = project_dir+"/"+dir_name;
 	cleanDirectory(dir_name);
 	createDirectory(dir_name);
+	int fr = video.getFrameRate();
 
 	int prev = 0;
 	int curr;
 	for (int i = 1; i < (int)cc.size(); ++i) {
 		curr = cc.at(i);
 		int len = curr - prev;
-		char numb[10];
+		char numb[20];
 		sprintf(numb,"%06d.mp4",i);
 		char start[20];
-		sprintf(start,"%02d:%02d:%02d.%03d",prev/(25*60*60),(prev%(25*60*60))/(25*60),(prev%(25*60))/25,(prev%25)*40);
+		sprintf(start,"%02d:%02d:%02d.%03d",prev/(fr*60*60),(prev%(fr*60*60))/(fr*60),(prev%(fr*60))/fr,(prev%fr)*(1000/fr));
 		char finish[20];
-		sprintf(finish,"%02d:%02d:%02d.%03d",len/(25*60*60),(len%(25*60*60))/(25*60),(len%(25*60))/25,(len%25)*40);
+		sprintf(finish,"%02d:%02d:%02d.%03d",len/(fr*60*60),(len%(fr*60*60))/(fr*60),(len%(fr*60))/fr,(len%fr)*(1000/fr));
 		char command[400];
 		sprintf(command,"avconv -i %s -ss %s -t %s -acodec copy -vcodec libx264 %s/%s",
 						vfile.c_str(),start,finish,temp_dir.c_str(),numb);
@@ -211,7 +237,6 @@ string IO::createAudioFile(string video_file){
 	system(command);
 	LOG.i(string("audio"), command);
 	return audio_file;
-
 }
 
 

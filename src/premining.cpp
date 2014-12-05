@@ -14,18 +14,10 @@ namespace aire {
 
 
 PreMining::PreMining(IO t_io)
-	:io(t_io)
-{
-	cc = io.readIntVector("camera_changes.txt");
-	cm = io.readScalarVector("camera_motion.txt");
-}
+	:io(t_io){}
 
 PreMining::PreMining(string str)
-	:io(str)
-{
-	cc = io.readIntVector("camera_changes.txt");
-	cm = io.readScalarVector("camera_motion.txt");
-}
+	:io(str){}
 
 
 PreMining::~PreMining() {

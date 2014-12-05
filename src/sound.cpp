@@ -196,16 +196,20 @@ bool Sound::getWoodenHit()
 	}
 
 	std::stringstream content;
-	cout << endl;//####
+	//cout << endl;//####
+
+	float max = 0;
 	for (unsigned int i = 0; i < result.size(); ++i) {
 		//cout << accumulate(result.at(i).begin(),result.at(i).end(),0.0) << ", ";
+		if(max < accumulate(result.at(i).begin(),result.at(i).end(),0.0)){//####
+			max = accumulate(result.at(i).begin(),result.at(i).end(),0.0);//####
+		}//#####
 		if (threshold <= accumulate(result.at(i).begin(),result.at(i).end(),0.0)){
-			cout << "selecting shot sound value::" << threshold << endl;//####
-			return true;
-
+			//cout << "selecting shot sound value::" << threshold << endl;//####
+			//return true;
 		}
 	}
-	cout << endl;//####
+	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  "<< max << endl;//####
 	return false;
 }
 
