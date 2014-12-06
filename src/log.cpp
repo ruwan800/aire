@@ -90,7 +90,8 @@ void Log::w(const string cat, string val){
 
 Log::Process* Log::startProcess(string process_name){
 	for (unsigned int i = 0; i < processes.size(); ++i) {	//####
-		cout << "SP0::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;			//####
+		this->i(processes.at(i).name+"::old", processes.at(i).progress+"/"+processes.at(i).boundary);
+		//cout << "SP0::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;			//####
 	}														//####
 	for (unsigned int i = 0; i < processes.size(); ++i) {
 		if(processes.at(i).name.compare(process_name) == 0 ){
@@ -101,13 +102,15 @@ Log::Process* Log::startProcess(string process_name){
 	pr.name = process_name;
 	processes.push_back(pr);
 	for (unsigned int i = 0; i < processes.size(); ++i) {	//####
-		cout << "SP1::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;
+		this->i(processes.at(i).name+"::new", processes.at(i).progress+"/"+processes.at(i).boundary);
+		//cout << "SP1::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;
 	}														//####
 	return &processes.back();
 }
 void  Log::endProcess(Process m_process){
 	for (unsigned int i = 0; i < processes.size(); ++i) {	//####
-		cout << "SE0::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;
+		this->i(processes.at(i).name+"::old", processes.at(i).progress+"/"+processes.at(i).boundary);
+		//cout << "SE0::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;
 	}														//####
 	while(true){
 		if(! processes.size()){
@@ -120,6 +123,7 @@ void  Log::endProcess(Process m_process){
 		processes.pop_back();
 	}
 	for (unsigned int i = 0; i < processes.size(); ++i) {	//####
+		this->i(processes.at(i).name+"::new", processes.at(i).progress+"/"+processes.at(i).boundary);
 		cout << "SE1::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;
 	}														//####
 
