@@ -56,7 +56,7 @@ using namespace std;
 
 namespace aire {
 
-Sound::Sound(string videofile, Log log)
+Sound::Sound(string videofile, Log* log)
 	:LOG(log)
 {
 	video_file = videofile;

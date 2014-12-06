@@ -37,10 +37,10 @@ namespace aire {
 class Sound {
 public:
 	Sound(Video vid);
-	Sound(string videofile, Log log);
+	Sound(string videofile, Log* log);
 	virtual ~Sound();
 	bool getWoodenHit();
-	Log LOG;
+	Log* LOG;
 private:
 	string video_file;
 	string audio_file;

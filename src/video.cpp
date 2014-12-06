@@ -22,7 +22,18 @@ Video::Video(string vf, bool adjust) {
 	video_size = 0;
 	loadVideo();
 	loadInitialFrames();
-	LOG = Log();
+	Log log = Log();
+	LOG = &log;
+}
+
+Video::Video(Log* log, string vf, bool adjust)
+	:LOG(log)
+{
+	adjust_resolution = adjust;
+	video_file = vf;
+	video_size = 0;
+	loadVideo();
+	loadInitialFrames();
 }
 
 

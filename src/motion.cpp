@@ -7,6 +7,7 @@
 
 #include "motion.h"
 #include "io.h"
+#include "log.h"
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -33,7 +34,12 @@ std::vector<int> Motion::findCameraChanges() {
 	int last_value = 0;
 	int threshold_value = 24;
 
+	Log::Process* pr = LOG->startProcess("Finding Camera Scenes");
+	pr->setProcessBoundary(video.size()-3);
+
 	for (int i = 2; i < (int)video.size()-2; ++i) {
+		pr->setProcessBoundary(video.size()-3);
+		pr->setProcessProgress(i);
 		//std::cout << i << "/" << frames.size()-4 << std::endl;//####
 		cv::Scalar m[3];
 		std::vector<cv::Mat> frames = video.getFrames(i-2,i+3);
@@ -46,17 +52,19 @@ std::vector<int> Motion::findCameraChanges() {
 			threshold(gray, thresh, 10, 255, CV_THRESH_BINARY);
 			m[j] = cv::mean(thresh);
 		}
+		std::cout << i+1 << "::" << m[0] << m[1] << m[2] << std::endl;//####
 		if( threshold_value < m[1][0] -m[0][0] && threshold_value < m[1][0] - m[2][0] && 10 < i+1-last_value){
 			camPoints.push_back(i+1);
 			last_value = i+1;
-			LOG.i("output",format("Camera Change: Frame: %4d",i+1));
-			LOG.d("camera_change",format("%2.3f, %2.3f, %2.3f, ",m[0][0], m[1][0], m[2][0]));
+			LOG->i("output",format("Camera Change: Frame: %4d",i+1));
+			LOG->d("camera_change",format("%2.3f, %2.3f, %2.3f, ",m[0][0], m[1][0], m[2][0]));
 			//std::cout << i+1 << "::" << m[0] << m[1] << m[2] << std::endl;//####
 		}
 	}
 	if(10 < video.size() - last_value || last_value == 0){
 		camPoints.push_back(video.size()-1);
 	}
+	LOG->endProcess(*pr);
 	camera_changes = camPoints;
 	return camPoints;
 }
