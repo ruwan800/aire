@@ -18,7 +18,7 @@ CameraMotion::CameraMotion(Video vid, std::vector<int> m_cc)
 {
 	mean_min = 10000;
 	cc = m_cc;
-	Log LOG = video.LOG;
+	LOG = video.LOG;
 }
 
 CameraMotion::~CameraMotion() {
@@ -27,9 +27,13 @@ CameraMotion::~CameraMotion() {
 
 std::vector<cv::Scalar> CameraMotion::findCameraMotion() {
 
+	Log::Process* pr = LOG->startProcess("Finding Camera Motion");
+	pr->setProcessBoundary(video.size());
+
 	cv::Scalar cp= cv::Scalar(0,0,0);
 	std::vector<cv::Scalar> point_set;
 	for (int i = 1; i < video.size(); ++i) {
+		pr->setProcessProgress(i);
 		//std::cout << i << "/" << frames.size()-1 << std::endl;//####
 		if(std::find(cc.begin(), cc.end(), i) == cc.end()){
 			std::vector<cv::Mat> frames = video.getFrames(i-1,i+1);
@@ -39,14 +43,15 @@ std::vector<cv::Scalar> CameraMotion::findCameraMotion() {
 			point_set.push_back(cp);
 			char output[200];
 			sprintf(output,"X:%3d, Y:%3d, Z:%3d",(int)cp.val[0],(int)cp.val[1],(int)cp.val[2]);
-			LOG.i("output",string(output));
+			LOG->i("output",string(output));
 		}else{
 			cp = cv::Scalar(0,0,0);
 			point_set.push_back(cp);
-			LOG.i("output",string("X:  0, Y:  0, Z:  0"));
+			LOG->i("output",string("X:  0, Y:  0, Z:  0"));
 		}
 	}
 	cm = point_set;
+	LOG->endProcess(*pr);
 	return point_set;
 }
 

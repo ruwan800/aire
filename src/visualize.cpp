@@ -17,14 +17,11 @@ using namespace cv;
 
 namespace aire {
 
-Visualize::Visualize(IO t_io) {
-	io = t_io;
-}
+Visualize::Visualize(IO t_io)
+	:io(t_io){}
 
-Visualize::Visualize(string str) {
-	io = IO(str);
-}
-
+Visualize::Visualize(string str)
+	:io(str){}
 
 Visualize::~Visualize() {
 	// TODO Auto-generated destructor stub

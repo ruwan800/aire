@@ -23,7 +23,7 @@ public:
 	std::vector<cv::Scalar> findCameraMotion();
 private:
 	Video video;
-	Log LOG;
+	Log* LOG;
 	std::vector<int> cc;
 	std::vector<cv::Scalar> cm;
 	float mean_min;

@@ -22,7 +22,18 @@ Video::Video(string vf, bool adjust) {
 	video_size = 0;
 	loadVideo();
 	loadInitialFrames();
-	LOG = Log();
+	Log log = Log();
+	LOG = &log;
+}
+
+Video::Video(Log* log, string vf, bool adjust)
+	:LOG(log)
+{
+	adjust_resolution = adjust;
+	video_file = vf;
+	video_size = 0;
+	loadVideo();
+	loadInitialFrames();
 }
 
 
@@ -54,7 +65,12 @@ void Video::loadVideo(){
 		cout << "Video::Video::failed to open '" << video_file << "'." << endl;
 		return;
 	}
-	video_size = capture.get(CV_CAP_PROP_FRAME_COUNT);
+	//video_size = capture.get(CV_CAP_PROP_FRAME_COUNT);
+	frame_rate = capture.get(CV_CAP_PROP_FPS);
+}
+
+int Video::getFrameRate(){
+	return frame_rate;
 }
 
 std::vector<cv::Mat> Video::getFrames(int begin, int end){

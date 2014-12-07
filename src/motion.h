@@ -28,7 +28,7 @@ public:
 	void createCameraMotionGraphs();
 private:
 	Video video;
-	Log LOG;
+	Log* LOG;
 	std::vector<int> camera_changes;
 	std::vector<cv::Scalar> camera_movements;
 

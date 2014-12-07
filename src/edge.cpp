@@ -44,7 +44,9 @@ std::vector<float> Edge::getEdgeVariation() {
 		edge_changes.push_back(mean_value);
 		char output[200];
 		sprintf(output,"Edge Mean: %5.2f",mean_value);
-		LOG.i("output",string(output));
+		LOG->i("output",string(output));
+		//imshow("ssss", canny);
+		//cvWaitKey(0);
 	}
 	return edge_changes;
 }
@@ -79,9 +81,10 @@ std::vector<std::vector<float> > Edge::getSectionEdgeVariation() {
 			}
 			char output[200];
 			sprintf(output,"%5.2f    %5.2f    %5.2f    %5.2f",edge_values[0],edge_values[1],edge_values[2],edge_values[3]);
-			LOG.i("output",string(output));
+			LOG->i(string("output"),string(output));
 		}
-		LOG.i("output",string(""));
+		LOG->i("output",string(""));
+
 		section_edge_changes.push_back(sections);
 	}
 	return section_edge_changes;

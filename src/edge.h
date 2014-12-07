@@ -24,7 +24,7 @@ public:
 	std::vector<std::vector<float> > getSectionEdgeVariation();
 private:
 	Video video;
-	Log LOG;
+	Log* LOG;
 	std::vector<float> edge_changes;
 	std::vector<std::vector<float> > section_edge_changes;
 

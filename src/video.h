@@ -20,17 +20,20 @@ public:
 	//Video();
 	//Video(bool);
 	Video(string video_file, bool);
+	Video(Log* log, string vf, bool adjust);
 	virtual ~Video();
 	int size();
 	std::vector<cv::Mat> getFrames(int, int);
 	cv::Mat getFrame(int);
-	Log LOG;
+	int getFrameRate();
+	Log* LOG;
 	string video_file;
 private:
 	cv::VideoCapture capture;
 	cv::Mat frame_set[2][100];
 	int loaded_frames;
 	int video_size;
+	int frame_rate;
 	bool video_load_complete;
 	bool adjust_resolution;
 	void loadVideo();

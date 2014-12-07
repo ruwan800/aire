@@ -13,21 +13,12 @@ using namespace cv;
 namespace aire {
 
 
-PreMining::PreMining(IO t_io) {
-	io = t_io;
-	cc = io.readIntVector("camera_changes.txt");
-	cm = io.readScalarVector("camera_motion.txt");
-}
+PreMining::PreMining(IO t_io)
+	:io(t_io){}
 
-PreMining::PreMining(string str) {
-	io = IO(str);
-	cc = io.readIntVector("camera_changes.txt");
-	cm = io.readScalarVector("camera_motion.txt");
-}
+PreMining::PreMining(string str)
+	:io(str){}
 
-
-PreMining::PreMining() {
-}
 
 PreMining::~PreMining() {
 	// TODO Auto-generated destructor stub

@@ -7,6 +7,7 @@
 
 #include "motion.h"
 #include "io.h"
+#include "log.h"
 #include <iostream>
 #include <stdio.h>
 #include <string>
@@ -31,32 +32,52 @@ std::vector<int> Motion::findCameraChanges() {
 	std::vector<int> camPoints;
 	camPoints.push_back(0);
 	int last_value = 0;
-	int threshold_value = 65;
+	int threshold_value = 60;
+	int possible_min_width = 10;
 
-	for (int i = 2; i < (int)video.size()-2; ++i) {
+	Log::Process* pr = LOG->startProcess("Finding Camera Scenes");
+	pr->setProcessBoundary(video.size()-3);
+
+	for (int i = 3; i < (int)video.size()-3; ++i) {
+		pr->setProcessBoundary(video.size()-3);
+		pr->setProcessProgress(i);
 		//std::cout << i << "/" << frames.size()-4 << std::endl;//####
 		cv::Scalar m[3];
-		std::vector<cv::Mat> frames = video.getFrames(i-2,i+3);
+		std::vector<cv::Mat> frames = video.getFrames(i-3,i+4);
 		for (int j = 0; j < 3; ++j) {
 			cv::Mat d0,d1,r0,gray,thresh;
-			cv::absdiff(frames.at(j), frames.at(j+2), d0);
-			cv::absdiff(frames.at(j+1), frames.at(j+2), d1);
+			if(j==0){
+				cv::absdiff(frames.at(0), frames.at(2), d0);
+				cv::absdiff(frames.at(1), frames.at(2), d1);
+			}
+			else if(j==1){
+				cv::absdiff(frames.at(0), frames.at(6), d0);
+				cv::absdiff(frames.at(1), frames.at(6), d1);
+			}
+			else if(j==2){
+				cv::absdiff(frames.at(4), frames.at(6), d0);
+				cv::absdiff(frames.at(5), frames.at(6), d1);
+			}
 			cv::bitwise_and(d0, d1, r0);
 			cv::cvtColor(r0,gray,CV_BGR2GRAY);
 			threshold(gray, thresh, 10, 255, CV_THRESH_BINARY);
 			m[j] = cv::mean(thresh);
 		}
-		if( threshold_value < m[1][0] -m[0][0] && threshold_value < m[1][0] - m[2][0] && 10 < i+1-last_value){
-			camPoints.push_back(i+1);
-			last_value = i+1;
-			LOG.i("output",format("Camera Change: Frame: %4d",i+1));
-			LOG.d("camera_change",format("%2.3f, %2.3f, %2.3f, ",m[0][0], m[1][0], m[2][0]));
-			//std::cout << i+1 << "::" << m[0] << m[1] << m[2] << std::endl;//####
+		//std::cout << i+1 << "::" << m[0] << m[1] << m[2] << std::endl;//####
+		if( threshold_value < m[1][0] -m[0][0] && threshold_value < m[1][0] - m[2][0]){
+			if(possible_min_width < i-2-last_value){
+				camPoints.push_back(i-2);
+				LOG->i("output",format("Camera Change: Frame: %4d",i-2));
+				LOG->d("camera_change",format("%2.3f, %2.3f, %2.3f, ",m[0][0], m[1][0], m[2][0]));
+				//std::cout << i+1 << "::" << m[0] << m[1] << m[2] << std::endl;//####
+			}
+			last_value = i-2;
 		}
 	}
-	if(10 < video.size() - last_value || last_value == 0){
+	if(possible_min_width < video.size() - last_value || last_value == 0){
 		camPoints.push_back(video.size()-1);
 	}
+	LOG->endProcess(*pr);
 	camera_changes = camPoints;
 	return camPoints;
 }
