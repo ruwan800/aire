@@ -16,7 +16,7 @@ namespace aire {
 //Video::Video(){
 //}
 
-Video::Video(string vf, bool adjust) {
+/*Video::Video(string vf, bool adjust) {
 	adjust_resolution = adjust;
 	video_file = vf;
 	video_size = 0;
@@ -24,7 +24,7 @@ Video::Video(string vf, bool adjust) {
 	loadInitialFrames();
 	Log log = Log();
 	LOG = &log;
-}
+}*/
 
 Video::Video(Log* log, string vf, bool adjust)
 	:LOG(log)

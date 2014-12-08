@@ -19,7 +19,7 @@ class Video {
 public:
 	//Video();
 	//Video(bool);
-	Video(string video_file, bool);
+	//Video(string video_file, bool);
 	Video(Log* log, string vf, bool adjust);
 	virtual ~Video();
 	int size();
