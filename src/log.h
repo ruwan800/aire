@@ -46,7 +46,8 @@ public:
 			int progressval = this->progress*100/this->boundary;
 			//std::cout << "project progress pppp::" << progressval << std::endl;//####
 			if(progressval%10 == 0){
-				std::cout << "project progress::" << progressval << "%" << std::endl;//####
+				//std::cout << "project progress::" << progressval << "%" << std::endl;//####
+				//Log::i("::progress", "");
 			}
 		}
 	};
