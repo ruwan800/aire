@@ -26,6 +26,7 @@ public:
 	std::vector<cv::Mat> getFrames(int, int);
 	cv::Mat getFrame(int);
 	int getFrameRate();
+	bool release();
 	Log* LOG;
 	string video_file;
 private:
@@ -36,6 +37,7 @@ private:
 	int frame_rate;
 	bool video_load_complete;
 	bool adjust_resolution;
+	bool capture_released;
 	void loadVideo();
 	void loadInitialFrames();
 	void loadFrames(int);

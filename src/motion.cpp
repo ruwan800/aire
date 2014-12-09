@@ -37,11 +37,11 @@ std::vector<int> Motion::findCameraChanges() {
 	int possible_min_width = 10;
 
 	Log::Process* pr = LOG->startProcess("Finding Camera Scenes");
-	pr->setProcessBoundary(video.size()-3);
+	pr->setProcessBoundary(video.size()-1);
 
 	for (int i = 0; i < (int)video.size()-8; ++i) {
-		pr->setProcessBoundary(video.size()-3);
-		pr->setProcessProgress(i);
+		pr->setProcessBoundary(video.size()-1);
+		pr->setProcessProgress(i+8);
 		//std::cout << i << "/" << frames.size()-4 << std::endl;//####
 		cv::Scalar m[4];
 		std::vector<cv::Mat> frames = video.getFrames(i,i+8);
@@ -103,8 +103,8 @@ std::vector<int> Motion::findCameraChanges() {
 			}
 			cv::bitwise_and(d0, d1, r0);
 			cv::cvtColor(r0,gray,CV_BGR2GRAY);
-			/*threshold(gray, thresh, 10, 255, CV_THRESH_BINARY);
-			imshow("absdiff0",d0);//####
+			threshold(gray, thresh, 10, 255, CV_THRESH_BINARY);
+			/*imshow("absdiff0",d0);//####
 			imshow("absdiff1",d1);//####
 			imshow("bitwise_and",thresh);//####
 			waitKey(0);*/

@@ -34,6 +34,7 @@ Video::Video(Log* log, string vf, bool adjust)
 	video_size = 0;
 	loadVideo();
 	loadInitialFrames();
+	capture_released = false;
 }
 
 
@@ -58,7 +59,9 @@ int Video::size(){
 }
 
 void Video::loadVideo(){
+	LOG->i("Video",string("open"));
 	video_load_complete = false;
+	capture_released = false;
 	loaded_frames = 0;
 	capture = VideoCapture(video_file.c_str());	// open video file
 	if(!capture.isOpened()){  			// check if we succeeded
@@ -173,7 +176,10 @@ void Video::loadFrames(int start){
 	//while(start+100 < loaded_frames-200 || loaded_frames < start+100){
 	while(start+100 <= loaded_frames-200 || loaded_frames < start+100){
 		if(loaded_frames < start+100){
-			if(video_load_complete){break;}
+			if(video_load_complete){
+				release();
+				break;
+			}
 			for (int i = 0; i < 100; ++i) {		//TODO make this efficient
 				frame_set[0][i] = frame_set[1][i];
 			}
@@ -184,6 +190,19 @@ void Video::loadFrames(int start){
 			loadVideo();
 			loadInitialFrames();
 		}
+	}
+}
+
+bool Video::release(){
+	if(capture.isOpened()){
+		capture.release();
+		capture_released = true;
+		LOG->i("Video",string("release"));
+		return true;
+	}
+	else{
+		capture_released = true;
+		return false;
 	}
 }
 
