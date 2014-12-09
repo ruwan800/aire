@@ -81,11 +81,14 @@ std::vector<std::vector<float> > Edge::getSectionEdgeVariation() {
 			}
 			char output[200];
 			sprintf(output,"%5.2f    %5.2f    %5.2f    %5.2f",edge_values[0],edge_values[1],edge_values[2],edge_values[3]);
+			//printf("%5.2f    %5.2f    %5.2f    %5.2f\n",edge_values[0],edge_values[1],edge_values[2],edge_values[3]);
 			LOG->i(string("output"),string(output));
 		}
 		LOG->i("output",string(""));
 
 		section_edge_changes.push_back(sections);
+//		imshow("sss", canny);
+//		cvWaitKey(0);
 	}
 	return section_edge_changes;
 }

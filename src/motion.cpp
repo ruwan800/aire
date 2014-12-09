@@ -52,7 +52,7 @@ std::vector<int> Motion::findCameraChanges() {
 			threshold(gray, thresh, 10, 255, CV_THRESH_BINARY);
 			m[j] = cv::mean(thresh);
 		}
-		std::cout << i+1 << "::" << m[0] << m[1] << m[2] << std::endl;//####
+		//std::cout << i+1 << "::" << m[0] << m[1] << m[2] << std::endl;//####
 		if( threshold_value < m[1][0] -m[0][0] && threshold_value < m[1][0] - m[2][0] && 10 < i+1-last_value){
 			camPoints.push_back(i+1);
 			last_value = i+1;
