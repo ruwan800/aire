@@ -270,6 +270,7 @@ vector<string> IO::getSubDirs(string folderPath){
 			}
 		}
 	}
+	sort(dirs.begin(), dirs.end());
 	return dirs;
 }
 
@@ -297,6 +298,7 @@ vector<string> IO::getDirFiles(string folderPath){
 			dirs.push_back(folderPath +"/"+string(ent->d_name) );
 		}
 	}
+	sort(dirs.begin(), dirs.end());
 	return dirs;
 }
 
