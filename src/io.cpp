@@ -8,6 +8,7 @@
 #include "video.h"
 #include "io.h"
 #include "objects.h"
+#include "log.h"
 #include <stdio.h>
 #include <sys/stat.h>
 #include <iostream>
@@ -23,7 +24,8 @@ namespace aire {
 
 IO::IO(string str) {
 	project_dir = str.substr(0,str.rfind("."));
-	LOG = Log();
+	Log log = Log();
+	LOG = &log;
 }
 
 IO::IO(Video vid) {
@@ -34,7 +36,20 @@ IO::IO(Video vid) {
 	//project_dir= aire_dir+vf;
 	string str = (string)vid.video_file;
 	project_dir = str.substr(0,str.rfind("."));
-	LOG = Log();
+	Log log = Log();
+	LOG = &log;
+}
+
+IO::IO(Video vid, Log * log)
+	:LOG(log)
+{
+	aire_dir = "/tmp/aire/";
+	//string vf = (string)vid.video_file;
+	//vf = vf.substr(vf.rfind("/"));
+	//vf = vf.substr(0,vf.rfind("."));
+	//project_dir= aire_dir+vf;
+	string str = (string)vid.video_file;
+	project_dir = str.substr(0,str.rfind("."));
 }
 
 IO::~IO() {
@@ -44,13 +59,13 @@ IO::~IO() {
 void IO::checkDir(string pathname){
 	struct stat info;
 	if( stat( project_dir.c_str(), &info ) != 0 ){
-		LOG.d("create_directory",project_dir);
+		LOG->d("create_directory",project_dir);
 		mkdir(project_dir.c_str(), 0777);
 	}
 	string fullpath  = getAbsPath(pathname);
 	struct stat info1;
 	if( stat( fullpath.c_str(), &info1 ) != 0 ){
-		LOG.d("create_directory",fullpath);
+		LOG->d("create_directory",fullpath);
 		mkdir(fullpath.c_str(), 0777);
 	}
 }
@@ -68,7 +83,7 @@ void IO::createDirectory(string pathname){
 	struct stat info;
 	string real_dir = getAbsPath(pathname);
 	if( stat( real_dir.c_str(), &info ) != 0 ){
-		LOG.d("create_directory",real_dir);
+		LOG->d("create_directory",real_dir);
 		mkdir(real_dir.c_str(), 0777);
 	}
 }
@@ -98,7 +113,7 @@ string IO::getAbsPath(string path){
 				if( stat( str.c_str(), &info ) != 0 ){
 					struct stat info;
 					if( stat( str1.c_str(), &info ) != 0 ){
-						LOG.d("create_directory",str1);
+						LOG->d("create_directory",str1);
 						mkdir(str1.c_str(), 0777);
 					}
 				}
@@ -136,7 +151,6 @@ vector<int> IO::readIntVector(string filename){
 	return output;
 }
 
-
 void IO::write(vector<Scalar> data, string filename){
 	stringstream content;
 	for (int i = 0; i < (int) data.size(); ++i) {
@@ -161,17 +175,16 @@ void IO::write(vector<string> data, string filename){
 	writeToFile(filename, content.str());
 }
 
-
 void IO::writeToFile(string filename, string content ){
 	if(filename.find("/") != std::string::npos){
-		LOG.d("write",filename);
+		LOG->d("write",filename);
 		ofstream f;
 		f.open((filename).c_str(), std::fstream::out);
 		f << content;
 		f.close();
 	}
 	else{
-		LOG.d("write",project_dir+"/"+filename);
+		LOG->d("write",project_dir+"/"+filename);
 		ofstream f;
 		f.open((project_dir+"/"+filename).c_str(), std::fstream::out);
 		f << content;
@@ -180,7 +193,7 @@ void IO::writeToFile(string filename, string content ){
 }
 
 vector<String> IO::readFromFile(string filename){
-	LOG.d("read",project_dir+"/"+filename);
+	LOG->d("read",project_dir+"/"+filename);
 	vector<String> result;
 	ifstream file((project_dir+"/"+filename).c_str());
 	if(file.is_open()){
@@ -196,7 +209,7 @@ vector<String> IO::readFromFile(string filename){
 
 void IO::splitVideoFile(Video video, vector<int> cc, bool createall){
 	if(!createall && cc.size() == 2){
-		LOG.i("IO",string("no camera changes:: ")+video.video_file);
+		LOG->i("IO",string("no camera changes:: ")+video.video_file);
 		return;
 	}
 	string vfile = (string)video.video_file;
@@ -235,11 +248,9 @@ string IO::createAudioFile(string video_file){
 	char command[100];
 	sprintf(command,"avconv -i %s  %s",video_file.c_str(),audio_file.c_str());
 	system(command);
-	LOG.i(string("audio"), command);
+	LOG->i(string("audio"), command);
 	return audio_file;
 }
-
-
 
 vector<string> IO::getSubDirs(string folderPath){
 	vector<string> dirs;

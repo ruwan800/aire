@@ -90,7 +90,7 @@ void Log::w(const string cat, string val){
 
 Log::Process* Log::startProcess(string process_name){
 	for (unsigned int i = 0; i < processes.size(); ++i) {	//####
-		this->i(processes.at(i).name+"::@old", format("%d/%d",processes.at(i).progress,processes.at(i).boundary));
+		this->i(processes.at(i).name+"::@old", format("%d/%d",processes.at(i).getProcessProgress(), processes.at(i).getProcessBoundary()));
 		//cout << "SP0::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;			//####
 	}														//####
 	for (unsigned int i = 0; i < processes.size(); ++i) {
@@ -102,14 +102,14 @@ Log::Process* Log::startProcess(string process_name){
 	pr.name = process_name;
 	processes.push_back(pr);
 	for (unsigned int i = 0; i < processes.size(); ++i) {	//####
-		this->i(processes.at(i).name+"::@new", format("%d/%d",processes.at(i).progress,processes.at(i).boundary));
+		this->i(processes.at(i).name+"::@new", format("%d/%d",processes.at(i).getProcessProgress(),processes.at(i).getProcessBoundary()));
 		//cout << "SP1::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;
 	}														//####
 	return &processes.back();
 }
 void  Log::endProcess(Process m_process){
 	for (unsigned int i = 0; i < processes.size(); ++i) {	//####
-		this->i(processes.at(i).name+"::@old", format("%d/%d",processes.at(i).progress,processes.at(i).boundary));
+		this->i(processes.at(i).name+"::@old", format("%d/%d",processes.at(i).getProcessProgress(),processes.at(i).getProcessBoundary()));
 		//cout << "SE0::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;
 	}														//####
 	while(true){
@@ -123,36 +123,28 @@ void  Log::endProcess(Process m_process){
 		processes.pop_back();
 	}
 	for (unsigned int i = 0; i < processes.size(); ++i) {	//####
-		this->i(processes.at(i).name+"::@new", format("%d/%d",processes.at(i).progress,processes.at(i).boundary));
+		this->i(processes.at(i).name+"::@new", format("%d/%d",processes.at(i).getProcessProgress(),processes.at(i).getProcessBoundary()));
 		//cout << "SE1::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;
 	}														//####
 
 }
 
 Log::Process Log::getMainProcess(){
-	if(1 <= processes.size()){
-		return processes.front();
+	if( ! processes.size()){
+		throw logic_error("Requesting Main Process information when no process available.");
 	}
-	else{
-		Process p = Process();
-		p.name = "Main Process Complete";
-		p.boundary = -1;
-		p.boundary = -1;
-		return p;
-	}
+	return processes.front();
 }
 
 Log::Process Log::getSubProcess(){
-	if(2 <= processes.size()){
-		return processes.at(1);
+	if( processes.size() < 2 ){
+		throw logic_error("Requesting Sub Process information when no secondary process available.");
 	}
-	else{
-		Process p = Process();
-		p.name = "Main Process Complete";
-		p.boundary = -1;
-		p.boundary = -1;
-		return p;
-	}
+	return processes.at(1);
+}
+
+int Log::getNumberOfProcesses(){
+	return processes.size();
 }
 
 

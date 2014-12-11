@@ -25,6 +25,7 @@ namespace aire {
 
 class IO {
 public:
+	IO(Video vid, Log * log);
 	IO(string);
 	IO(Video);
 	virtual ~IO();
@@ -48,7 +49,7 @@ private:
 	bool isExists(string pathname);
 	string getAbsPath(string path);
 	vector<String> readFromFile(string);
-	Log LOG;
+	Log* LOG;
 
 };
 
