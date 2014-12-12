@@ -243,6 +243,7 @@ string IO::createAudioFile(string video_file){
 	sprintf(command,"avconv -i \"%s\"  \"%s\"",video_file.c_str(),audio_file.c_str());
 	system(command);
 	LOG->i(string("audio"), command);
+	//delete[] command;
 	return audio_file;
 }
 
