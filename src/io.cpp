@@ -28,20 +28,14 @@ IO::IO(string str) {
 	LOG = &log;
 }
 
-IO::IO(Video vid) {
-	aire_dir = "/tmp/aire/";
-	//string vf = (string)vid.video_file;
-	//vf = vf.substr(vf.rfind("/"));
-	//vf = vf.substr(0,vf.rfind("."));
-	//project_dir= aire_dir+vf;
-	string str = (string)vid.video_file;
+IO::IO(string str, Log* log)
+	:LOG(log)
+{
 	project_dir = str.substr(0,str.rfind("."));
-	Log log = Log();
-	LOG = &log;
 }
 
-IO::IO(Video vid, Log * log)
-	:LOG(log)
+IO::IO(Video vid)
+	:LOG(vid.LOG)
 {
 	aire_dir = "/tmp/aire/";
 	//string vf = (string)vid.video_file;
@@ -246,7 +240,7 @@ string IO::createAudioFile(string video_file){
 	if(isExists(audio_file)) return audio_file;
 	createDirectory(temp_dir);
 	char command[100];
-	sprintf(command,"avconv -i %s  %s",video_file.c_str(),audio_file.c_str());
+	sprintf(command,"avconv -i \"%s\"  \"%s\"",video_file.c_str(),audio_file.c_str());
 	system(command);
 	LOG->i(string("audio"), command);
 	return audio_file;
@@ -265,7 +259,8 @@ vector<string> IO::getSubDirs(string folderPath){
 			if(string(ent->d_name).length() < 3){
 				continue;
 			}
-			if(S_ISDIR(st.st_mode)){
+			unsigned int found=string(ent->d_name).find(".");
+			if (found==std::string::npos){
 				dirs.push_back(folderPath +"/"+string(ent->d_name) );
 			}
 		}

@@ -59,7 +59,7 @@ int Video::size(){
 }
 
 void Video::loadVideo(){
-	LOG->i("Video",string("open"));
+	LOG->i("Video::open",string(video_file));
 	video_load_complete = false;
 	capture_released = false;
 	loaded_frames = 0;

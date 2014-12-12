@@ -26,8 +26,8 @@ namespace aire {
 
 class IO {
 public:
-	IO(Video vid, Log * log);
 	IO(string);
+	IO(string, Log* log);
 	IO(Video);
 	virtual ~IO();
 	vector<Scalar> readScalarVector(string);

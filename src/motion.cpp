@@ -18,10 +18,7 @@ using namespace cv;
 namespace aire {
 
 Motion::Motion(Video vid)
-	:video(vid)
-{
-	LOG = video.LOG;
-}
+	:video(vid), LOG(video.LOG){}
 
 Motion::~Motion() {
 	// TODO Auto-generated destructor stub

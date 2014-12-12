@@ -23,7 +23,8 @@
 #include <numeric>
 #include <string>
 
-#include <aire/video.h>
+#include "video.h"
+#include "io.h"
 
 
 #ifndef SOUND_H_
@@ -42,6 +43,7 @@ public:
 	bool getWoodenHit();
 	Log* LOG;
 private:
+	IO io;
 	string video_file;
 	string audio_file;
 };
