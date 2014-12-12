@@ -239,10 +239,11 @@ string IO::createAudioFile(string video_file){
 	string audio_file = temp_dir+"/audio.wav";
 	if(isExists(audio_file)) return audio_file;
 	createDirectory(temp_dir);
-	char command[100];
+	char command[1000];
 	sprintf(command,"avconv -i \"%s\"  \"%s\"",video_file.c_str(),audio_file.c_str());
 	system(command);
 	LOG->i(string("audio"), command);
+	//delete[] command;
 	return audio_file;
 }
 
