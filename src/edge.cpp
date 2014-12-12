@@ -2,7 +2,7 @@
  * core.cpp
  *
  *  Created on: Jul 25, 2014
- *      Author: ruwan
+ *      Author: aire
  */
 
 #include "edge.h"

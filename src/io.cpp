@@ -2,7 +2,7 @@
  * core.cpp
  *
  *  Created on: Jul 25, 2014
- *      Author: ruwan
+ *      Author: aire
  */
 
 #include "video.h"
@@ -207,8 +207,8 @@ void IO::splitVideoFile(Video video, vector<int> cc, bool createall){
 		return;
 	}
 	string vfile = (string)video.video_file;
-	string dir_name = "video_temp";
-	string temp_dir = project_dir+"/"+dir_name;
+	string dir_name = "";
+	string temp_dir = project_dir+dir_name;
 	cleanDirectory(dir_name);
 	createDirectory(dir_name);
 	int fr = video.getFrameRate();
@@ -239,7 +239,7 @@ string IO::createAudioFile(string video_file){
 	string audio_file = temp_dir+"/audio.wav";
 	if(isExists(audio_file)) return audio_file;
 	createDirectory(temp_dir);
-	char command[100];
+	char command[1000];
 	sprintf(command,"avconv -i \"%s\"  \"%s\"",video_file.c_str(),audio_file.c_str());
 	system(command);
 	LOG->i(string("audio"), command);

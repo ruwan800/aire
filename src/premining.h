@@ -2,7 +2,7 @@
  * core.h
  *
  *  Created on: Jul 25, 2014
- *      Author: ruwan
+ *      Author: aire
  */
 
 
