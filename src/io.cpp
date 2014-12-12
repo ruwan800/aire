@@ -254,7 +254,8 @@ vector<string> IO::getSubDirs(string folderPath){
 			if(string(ent->d_name).length() < 3){
 				continue;
 			}
-			if(S_ISDIR(st.st_mode)){
+			unsigned int found=string(ent->d_name).find(".");
+			if (found==std::string::npos){
 				dirs.push_back(folderPath +"/"+string(ent->d_name) );
 			}
 		}
