@@ -50,20 +50,19 @@
 #include <fstream>
 #include <numeric>
 
-#include "io.h"
 
 using namespace std;
 
 namespace aire {
 
 Sound::Sound(string videofile, Log* log)
-	:LOG(log)
+	:LOG(log), io(videofile, log)
 {
 	video_file = videofile;
 }
 
 Sound::Sound(Video video)
-	:LOG(video.LOG)
+	:LOG(video.LOG),  io(video)
 {
 	video_file = video.video_file;
 }
@@ -76,10 +75,8 @@ Sound::~Sound() {
 
 bool Sound::getWoodenHit()
 {
-
-	IO io = IO(video_file);
+	cout << "Camera sound." << endl;
 	string audiofile = io.createAudioFile(video_file);
-
 
 	int threshold = 800;
 	// Now we are pretty sure that argv[1] holds a parameter.
@@ -198,18 +195,17 @@ bool Sound::getWoodenHit()
 	std::stringstream content;
 	//cout << endl;//####
 
-	float max = 0;
+	//float max = 0;
 	for (unsigned int i = 0; i < result.size(); ++i) {
 		//cout << accumulate(result.at(i).begin(),result.at(i).end(),0.0) << ", ";
-		if(max < accumulate(result.at(i).begin(),result.at(i).end(),0.0)){//####
+		/*if(max < accumulate(result.at(i).begin(),result.at(i).end(),0.0)){//####
 			max = accumulate(result.at(i).begin(),result.at(i).end(),0.0);//####
-		}//#####
+		}//#####*/
 		if (threshold <= accumulate(result.at(i).begin(),result.at(i).end(),0.0)){
-			//cout << "selecting shot sound value::" << threshold << endl;//####
-			//return true;
+			return true;
 		}
 	}
-	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  "<< max << endl;//####
+	//cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  "<< max << endl;//####
 	return false;
 }
 

@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 
 #ifndef LOG_H_
 #define LOG_H_
@@ -35,13 +36,13 @@ public:
 	void setEnabled(bool enabled);
 	struct Process {
 		string name;
-		int progress;
-		int boundary;
-		void setProcessBoundary(int boundary){
+		private: int progress;
+		private: int boundary;
+		public: void setProcessBoundary(int boundary){
 			this->boundary = boundary;
 			//std::cout << "~~~~~~~~~~~setting project boundary::" << boundary << std::endl;//####
 		}
-		void setProcessProgress(int progress){
+		public: void setProcessProgress(int progress){
 			this->progress = progress;
 			int progressval = this->progress*100/this->boundary;
 			//std::cout << "project progress pppp::" << progressval << std::endl;//####
@@ -50,11 +51,18 @@ public:
 				//Log::i("::progress", "");
 			}
 		}
+		public: int getProcessProgress(){
+			return progress;
+		}
+		public: int getProcessBoundary(){
+			return boundary;
+		}
 	};
 	Process* startProcess(string process_name);
 	void endProcess(Process m_process);
 	Process getMainProcess();
 	Process getSubProcess();
+	int getNumberOfProcesses();
 private:
 	struct message {
 	  string m_type;
