@@ -41,6 +41,7 @@ std::vector<int> Motion::findCameraChanges() {
 		pr->setProcessProgress(i+8);
 		//std::cout << i << "/" << frames.size()-4 << std::endl;//####
 		cv::Scalar m[4];
+		Mat Temp01[4];//####
 		std::vector<cv::Mat> frames = video.getFrames(i,i+8);
 		for (int j = 0; j < 4; ++j) {
 			cv::Mat d0,d1,r0,gray,thresh;
@@ -64,6 +65,7 @@ std::vector<int> Motion::findCameraChanges() {
 			cv::cvtColor(r0,gray,CV_BGR2GRAY);
 			threshold(gray, thresh, 10, 255, CV_THRESH_BINARY);
 			m[j] = cv::mean(thresh);
+			Temp01[j] = cv::mean(thresh);//####
 		}
 		//std::cout << i+1 << "::++++::" << m[1][0]-m[0][0] << "::" << m[2][0]-m[3][0] << "::" << m[0] << m[1] << m[2] << m[3] << std::endl;//####
 		if( short_transition_threshold < m[1][0] -m[0][0] && short_transition_threshold < m[2][0] - m[3][0]){

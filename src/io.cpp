@@ -207,8 +207,8 @@ void IO::splitVideoFile(Video video, vector<int> cc, bool createall){
 		return;
 	}
 	string vfile = (string)video.video_file;
-	string dir_name = "";
-	string temp_dir = project_dir+dir_name;
+	string dir_name = "video_temp";
+	string temp_dir = project_dir+"/"+dir_name;
 	cleanDirectory(dir_name);
 	createDirectory(dir_name);
 	int fr = video.getFrameRate();
