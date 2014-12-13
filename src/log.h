@@ -36,33 +36,27 @@ public:
 	void setEnabled(bool enabled);
 	struct Process {
 		string name;
-		private: int progress;
-		private: int boundary;
-		public: void setProcessBoundary(int boundary){
-			this->boundary = boundary;
-			//std::cout << "~~~~~~~~~~~setting project boundary::" << boundary << std::endl;//####
-		}
-		public: void setProcessProgress(int progress){
-			this->progress = progress;
-			int progressval = this->progress*100/this->boundary;
-			//std::cout << "project progress pppp::" << progressval << std::endl;//####
-			if(progressval%10 == 0){
-				//std::cout << "project progress::" << progressval << "%" << std::endl;//####
-				//Log::i("::progress", "");
-			}
-		}
-		public: int getProcessProgress(){
-			return progress;
-		}
-		public: int getProcessBoundary(){
-			return boundary;
-		}
+		int progress;
+		int boundary;
 	};
-	Process* startProcess(string process_name);
-	void endProcess(Process m_process);
-	Process getMainProcess();
-	Process getSubProcess();
-	int getNumberOfProcesses();
+	int getMainProcessBoundary();
+	int getSubProcessBoundary();
+	int getMainProcessProgress();
+	int getSubProcessProgress();
+	void startMainProcess(string name);
+	void startSubProcess(string name);
+	void endMainProcess();
+	void endSubProcess();
+	void setMainProcessBoundary(int boundary);
+	void setSubProcessBoundary(int boundary);
+	void setMainProcessProgress(int boundary);
+	void setSubProcessProgress(int boundary);
+	void incrementMainProcessBoundary(int increment);
+	void incrementSubProcessBoundary(int increment);
+	void incrementMainProcess();
+	void incrementSubProcess();
+	Process mainProcess;
+	Process subProcess;
 private:
 	struct message {
 	  string m_type;
@@ -74,7 +68,6 @@ private:
 	void addToLog(message);
 	void print(string, string, string);
 	void processMessage(string, string, string);
-	std::vector<Process> processes;
 
 
 };

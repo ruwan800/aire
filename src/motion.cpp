@@ -33,15 +33,15 @@ std::vector<int> Motion::findCameraChanges() {
 	int long_transition_threshold = 130;
 	int possible_min_width = 10;
 
-	Log::Process* pr = LOG->startProcess("Finding Camera Scenes");
-	pr->setProcessBoundary(video.size()-1);
+	LOG->startSubProcess("Finding Camera Scenes");
+	LOG->setSubProcessBoundary(video.size()-1);
 
 	for (int i = 0; i < (int)video.size()-8; ++i) {
-		pr->setProcessBoundary(video.size()-1);
-		pr->setProcessProgress(i+8);
+		LOG->setSubProcessBoundary(video.size()-1);
+		LOG->setSubProcessProgress(i+8);
 		//std::cout << i << "/" << frames.size()-4 << std::endl;//####
 		cv::Scalar m[4];
-		Mat Temp01[4];//####
+		//Mat Temp01[4];//####
 		std::vector<cv::Mat> frames = video.getFrames(i,i+8);
 		for (int j = 0; j < 4; ++j) {
 			cv::Mat d0,d1,r0,gray,thresh;
@@ -65,8 +65,13 @@ std::vector<int> Motion::findCameraChanges() {
 			cv::cvtColor(r0,gray,CV_BGR2GRAY);
 			threshold(gray, thresh, 10, 255, CV_THRESH_BINARY);
 			m[j] = cv::mean(thresh);
-			Temp01[j] = cv::mean(thresh);//####
+			//Temp01[j] = thresh;//####
 		}
+		/*imshow("frame0",Temp01[0]);//####
+		imshow("frame1",Temp01[1]);//####
+		imshow("frame2",Temp01[2]);//####
+		imshow("frame3",Temp01[3]);//####
+		waitKey();*/
 		//std::cout << i+1 << "::++++::" << m[1][0]-m[0][0] << "::" << m[2][0]-m[3][0] << "::" << m[0] << m[1] << m[2] << m[3] << std::endl;//####
 		if( short_transition_threshold < m[1][0] -m[0][0] && short_transition_threshold < m[2][0] - m[3][0]){
 			if(possible_min_width < i+4-last_value || last_value == 0 ){
@@ -119,7 +124,7 @@ std::vector<int> Motion::findCameraChanges() {
 	//if(possible_min_width < video.size() - last_value || last_value == 0){
 	camPoints.push_back(video.size()-1);
 	//}
-	LOG->endProcess(*pr);
+	LOG->endSubProcess();
 	camera_changes = camPoints;
 	return camPoints;
 }

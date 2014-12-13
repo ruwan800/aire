@@ -27,13 +27,13 @@ CameraMotion::~CameraMotion() {
 
 std::vector<cv::Scalar> CameraMotion::findCameraMotion() {
 
-	Log::Process* pr = LOG->startProcess("Finding Camera Motion");
-	pr->setProcessBoundary(video.size());
+	LOG->startSubProcess("Finding Camera Motion");
+	LOG->setSubProcessBoundary(video.size());
 
 	cv::Scalar cp= cv::Scalar(0,0,0);
 	std::vector<cv::Scalar> point_set;
 	for (int i = 1; i < video.size(); ++i) {
-		pr->setProcessProgress(i);
+		LOG->setSubProcessProgress(i);
 		//std::cout << i << "/" << frames.size()-1 << std::endl;//####
 		if(std::find(cc.begin(), cc.end(), i) == cc.end()){
 			std::vector<cv::Mat> frames = video.getFrames(i-1,i+1);
@@ -51,7 +51,7 @@ std::vector<cv::Scalar> CameraMotion::findCameraMotion() {
 		}
 	}
 	cm = point_set;
-	LOG->endProcess(*pr);
+	LOG->endSubProcess();
 	return point_set;
 }
 
@@ -122,6 +122,40 @@ cv::Scalar CameraMotion::findCameraPoint(cv::Scalar initial_point){
 	//sprintf(text_file,imageset_directory,temp);
 	//imwrite(text_file,test);
 	////////////////////////////////////////////////////////////////////////////
+
+
+	/*cout << meanMinVal << endl;
+	int Zcol = meanMinVal[0];
+	int Zrow = meanMinVal[1];
+	int Zzoom = meanMinVal[2];
+	int srcrows = frame1.rows, srccols = frame1.cols;
+	cv::Mat src1 = frame1.clone(), src2 = frame2.clone();
+	if(0 < Zcol){
+		src1 = src1.colRange(Zcol, srccols);
+		src2 = src2.colRange(0, srccols -Zcol);
+	}
+	else if (Zcol < 0){
+		int Fcol = abs(Zcol);
+		src1 = src1.colRange(0, srccols -Fcol);
+		src2 = src2.colRange(Fcol, srccols);
+	}
+
+	if(0 < Zrow){
+		src1 = src1.rowRange(0, srcrows -Zrow);
+		src2 = src2.rowRange(Zrow, srcrows);
+	}
+	else if(Zrow < 0){
+		int Frow = abs(Zrow);
+		src1 = src1.rowRange(Frow, srcrows);
+		src2 = src2.rowRange(0, srcrows -Frow);
+	}
+
+
+
+	cv::Mat x,y;//####
+	cv::bitwise_and(src1, src2, x);//####
+	cv::imshow("camera motion", x);//####
+	cv::waitKey(0);//####*/
 
 
 	return meanMinVal;

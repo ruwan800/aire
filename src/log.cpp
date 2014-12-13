@@ -16,6 +16,10 @@ namespace aire {
 
 Log::Log() {
 	log_enabled = true;
+	mainProcess.boundary = 0;
+	mainProcess.progress = 0;
+	subProcess.boundary = 0;
+	subProcess.progress = 0;
 }
 
 Log::~Log() {
@@ -87,64 +91,84 @@ void Log::w(const string cat, string val){
 	processMessage(x, cat, val );
 }
 
-
-Log::Process* Log::startProcess(string process_name){
-	for (unsigned int i = 0; i < processes.size(); ++i) {	//####
-		this->i(processes.at(i).name+"::@old", format("%d/%d",processes.at(i).getProcessProgress(), processes.at(i).getProcessBoundary()));
-		//cout << "SP0::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;			//####
-	}														//####
-	for (unsigned int i = 0; i < processes.size(); ++i) {
-		if(processes.at(i).name.compare(process_name) == 0 ){
-			return &processes.at(0);
-		}
-	}
-	Process pr = Process();
-	pr.name = process_name;
-	processes.push_back(pr);
-	for (unsigned int i = 0; i < processes.size(); ++i) {	//####
-		this->i(processes.at(i).name+"::@new", format("%d/%d",processes.at(i).getProcessProgress(),processes.at(i).getProcessBoundary()));
-		//cout << "SP1::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;
-	}														//####
-	return &processes.back();
-}
-void  Log::endProcess(Process m_process){
-	for (unsigned int i = 0; i < processes.size(); ++i) {	//####
-		this->i(processes.at(i).name+"::@old", format("%d/%d",processes.at(i).getProcessProgress(),processes.at(i).getProcessBoundary()));
-		//cout << "SE0::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;
-	}														//####
-	while(true){
-		if(! processes.size()){
-			break;
-		}
-		if(processes.back().name.compare(m_process.name) == 0 ){
-			processes.pop_back();
-			break;
-		}
-		processes.pop_back();
-	}
-	for (unsigned int i = 0; i < processes.size(); ++i) {	//####
-		this->i(processes.at(i).name+"::@new", format("%d/%d",processes.at(i).getProcessProgress(),processes.at(i).getProcessBoundary()));
-		//cout << "SE1::" << processes.at(i).name << "::" << processes.at(i).progress << "::" << processes.at(i).boundary << "::" << endl;
-	}														//####
-
+void Log::startMainProcess(string name){
+	mainProcess.name = name;
 }
 
-Log::Process Log::getMainProcess(){
-	if( ! processes.size()){
-		throw logic_error("Requesting Main Process information when no process available.");
-	}
-	return processes.front();
+void Log::startSubProcess(string name){
+	subProcess.name = name;
 }
 
-Log::Process Log::getSubProcess(){
-	if( processes.size() < 2 ){
-		throw logic_error("Requesting Sub Process information when no secondary process available.");
-	}
-	return processes.at(1);
+void Log::endMainProcess(){
+	mainProcess.name = "";
+	mainProcess.boundary = 0;
+	mainProcess.progress = 0;
+}
+void Log::endSubProcess(){
+	mainProcess.name = "";
+	subProcess.boundary = 0;
+	subProcess.progress = 0;
 }
 
-int Log::getNumberOfProcesses(){
-	return processes.size();
+int Log::getMainProcessBoundary(){
+	return mainProcess.boundary;
+}
+int Log::getSubProcessBoundary(){
+	return subProcess.boundary;
+}
+int Log::getMainProcessProgress(){
+	return mainProcess.progress;
+}
+int Log::getSubProcessProgress(){
+	return subProcess.progress;
+}
+
+void Log::setMainProcessBoundary(int boundary){
+	mainProcess.boundary = boundary;
+}
+
+void Log::setSubProcessBoundary(int boundary){
+	subProcess.boundary = boundary;
+}
+
+void Log::incrementMainProcessBoundary(int increment){
+	mainProcess.boundary += increment;
+}
+
+void Log::incrementSubProcessBoundary(int increment){
+	subProcess.boundary += increment;
+}
+
+void Log::setMainProcessProgress(int progress){
+	mainProcess.progress = progress;
+	if(progress%10 == 0){
+		std::cout << "project progress::" << progress << std::endl;//####
+		//Log::i("::progress", "");
+	}
+}
+
+void Log::setSubProcessProgress(int progress){
+	subProcess.progress = progress;
+	if(progress%10 == 0){
+		std::cout << "project progress::" << progress << "%" << std::endl;//####
+		//Log::i("::progress", "");
+	}
+}
+
+void Log::incrementMainProcess(){
+	mainProcess.progress ++;
+	if(mainProcess.progress%10 == 0){
+		std::cout << "project progress::" << mainProcess.progress << "%" << std::endl;//####
+		//Log::i("::progress", "");
+	}
+}
+
+void Log::incrementSubProcess(){
+	subProcess.progress ++;
+	if(mainProcess.progress%10 == 0){
+		std::cout << "project progress::" << mainProcess.progress << "%" << std::endl;//####
+		//Log::i("::progress", "");
+	}
 }
 
 
