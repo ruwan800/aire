@@ -47,13 +47,14 @@ public:
 	void startSubProcess(string name);
 	void endMainProcess();
 	void endSubProcess();
+	void setMainProcess(string name);
 	void setMainProcessBoundary(int boundary);
 	void setSubProcessBoundary(int boundary);
 	void setMainProcessProgress(int boundary);
 	void setSubProcessProgress(int boundary);
 	void incrementMainProcessBoundary(int increment);
 	void incrementSubProcessBoundary(int increment);
-	void incrementMainProcess();
+	void incrementMainProcess(string name);
 	void incrementSubProcess();
 	Process mainProcess;
 	Process subProcess;
