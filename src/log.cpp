@@ -150,7 +150,7 @@ void Log::setMainProcessProgress(int progress){
 void Log::setSubProcessProgress(int progress){
 	subProcess.progress = progress;
 	if(progress%10 == 0){
-		std::cout << "project progress::" << progress << "%" << std::endl;//####
+		std::cout << "project progress::" << progress << std::endl;//####
 		//Log::i("::progress", "");
 	}
 }
@@ -158,7 +158,7 @@ void Log::setSubProcessProgress(int progress){
 void Log::incrementMainProcess(string name){
 	mainProcess.progress ++;
 	if(mainProcess.progress%10 == 0){
-		std::cout << "project progress::" << mainProcess.progress << "%" << std::endl;//####
+		std::cout << "project progress::" << mainProcess.progress << std::endl;//####
 		//Log::i("::progress", "");
 	}
 	mainProcess.name = name;
@@ -169,7 +169,7 @@ void Log::incrementMainProcess(string name){
 void Log::incrementSubProcess(){
 	subProcess.progress ++;
 	if(mainProcess.progress%10 == 0){
-		std::cout << "project progress::" << mainProcess.progress << "%" << std::endl;//####
+		std::cout << "project progress::" << mainProcess.progress << std::endl;//####
 		//Log::i("::progress", "");
 	}
 }

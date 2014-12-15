@@ -283,10 +283,15 @@ vector<string> IO::getDirFiles(string folderPath){
 				continue;
 			}
 			struct stat st;
-			lstat(dirfile.c_str(), &st);
+			stat((folderPath+"/"+dirfile).c_str(), &st);
 			/*if(! S_ISDIR(st.st_mode)){
+				cout << "we ignore everything that are not normal files." <<endl;//#####
 				continue;
 			}*/
+			if(st.st_size < 1000){
+				cout << "ignoring very small file::" << folderPath <<  "/" << dirfile << endl;//####
+				continue;
+			}
 			unsigned int found=dirfile.find(".");
 			if (found==std::string::npos){
 				continue;
