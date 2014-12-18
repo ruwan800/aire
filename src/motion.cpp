@@ -29,7 +29,7 @@ std::vector<int> Motion::findCameraChanges() {
 	std::vector<int> camPoints;
 	camPoints.push_back(0);
 	int last_value = 0;
-	int short_transition_threshold = 30;
+	int short_transition_threshold = 20;
 	int long_transition_threshold = 130;
 	int possible_min_width = 10;
 
@@ -75,13 +75,21 @@ std::vector<int> Motion::findCameraChanges() {
 		//std::cout << i+1 << "::++++::" << m[1][0]-m[0][0] << "::" << m[2][0]-m[3][0] << "::" << m[0] << m[1] << m[2] << m[3] << std::endl;//####
 		if( short_transition_threshold < m[1][0] -m[0][0] && short_transition_threshold < m[2][0] - m[3][0]){
 			if(possible_min_width < i+4-last_value || last_value == 0 ){
-				camPoints.push_back(i+4);
-				LOG->i("output",format("Camera Change: Frame: %4d",i+4));
-				LOG->d("camera_change ",format("%2.3f, %2.3f, %2.3f, %2.3f",m[0][0], m[1][0], m[2][0], m[3][0]));
-				//std::cout << i+1 << "::" << m[0] << m[1] << m[2] << std::endl;//####
+
+				//imshow("x2", frames.at(2));
+				//imshow("x3", frames.at(3));
+				//imshow("x4", frames.at(4));
+				//imshow("x5", frames.at(5));
+				//imshow("x6", frames.at(6));
+				if(isNotSimilar(frames)){
+					camPoints.push_back(i+4);
+					LOG->i("output",format("Camera Change: Frame: %4d",i+4));
+					LOG->d("camera_change ",format("%2.3f, %2.3f, %2.3f, %2.3f",m[0][0], m[1][0], m[2][0], m[3][0]));
+					//std::cout << i+1 << "::" << m[0] << m[1] << m[2] << std::endl;//####
+				}
+				last_value = i+4;
+				continue;
 			}
-			last_value = i+4;
-			continue;
 		}
 		for (int j = 0; j < 4; ++j) {
 			cv::Mat d0,d1,r0,gray,thresh;
@@ -234,5 +242,136 @@ void Motion::createCameraMotionGraphs(){
 }
 */
 
+
+bool Motion::isNotSimilar(vector<Mat> images) {
+
+	for (int i = 0; i < images.size()-1; ++i) {
+		//int m_x = img_1.cols/2; //, m_y = img_1.rows/2;
+		int minHessian = 10;
+		Mat img_1 = images.at(i);
+		Mat img_2 = images.at(i+1);
+
+		SurfFeatureDetector detector( minHessian );
+
+		std::vector<KeyPoint> keypoints_1, keypoints_2;
+
+		detector.detect( img_1, keypoints_1 );
+		detector.detect( img_2, keypoints_2 );
+
+		//-- Step 2: Calculate descriptors (feature vectors)
+		SurfDescriptorExtractor extractor;
+
+		Mat descriptors_1, descriptors_2;
+
+		extractor.compute( img_1, keypoints_1, descriptors_1 );
+		extractor.compute( img_2, keypoints_2, descriptors_2 );
+
+		//-- Step 3: Matching descriptor vectors using FLANN matcher
+		FlannBasedMatcher matcher;
+		std::vector< DMatch > matches;
+		matcher.match( descriptors_1, descriptors_2, matches );
+
+		//double max_dist = 0; double min_dist = 100;
+
+		//-- Quick calculation of max and min distances between keypoints
+		std::vector< DMatch > good_matches;
+		vector<float> meanX;
+		for( int i = 0; i < descriptors_1.rows; i++ ){
+			//double dist = matches[i].distance;
+			Point2f pt1 = keypoints_1.at(matches[i].queryIdx).pt;
+			Point2f pt2 = keypoints_2.at(matches[i].trainIdx).pt;
+
+			if(abs(pt1.x - pt2.x) < .5  && abs(pt1.y - pt2.y) < .5){
+			//	circle(img_2, pt1, 2, Scalar(255,255,255), 1, 8, 0);
+			//	line(img_2, pt1, pt2, Scalar(255,255,255), 1, 8, 0);
+			}
+			else if(abs(pt1.x - pt2.x) < 50  && abs(pt1.y - pt2.y) < 50 ){
+				line(img_2, pt1, pt2, Scalar(0,255,0), 1, 8, 0);//#####
+				circle(img_2, pt1, 2, Scalar(255,0,0), 1, 8, 0);//#####
+				circle(img_2, pt2, 2, Scalar(0,0,255), 1, 8, 0);//#####
+				good_matches.push_back( matches[i]);
+				//meanX.push_back(pt1.x - pt2.x);
+				//cout << matches[i].distance << endl;//####
+				//cout << pt1.x - pt2.x << endl;//####
+			}
+			//cout << matches[i].distance << "::"<< matches[i].imgIdx << "::"<< "" << "::"<< matches[i].trainIdx << endl;
+		}
+		/*float meanX0 = 0;
+		int start = meanX.size()/4;
+		int finish = meanX.size()*3/4;
+		for (int i = start; i < finish; ++i) {
+			meanX0 += meanX.at(i);
+		}
+		float mX = meanX0*2/meanX.size();
+		//cout << mX << endl;//####
+
+
+
+
+
+		vector<float> meanZ;
+		for( unsigned int i = 0; i < good_matches.size(); i++ ){
+
+			Point2f pt_1 = keypoints_1.at(good_matches[i].queryIdx).pt;
+			Point2f pt_2 = keypoints_2.at(good_matches[i].trainIdx).pt;
+			float xd = pt_1.x - pt_2.x;
+			float xz = (xd - mX)/(m_x - pt_1.x);
+			meanZ.push_back(xz);
+			//cout << xz << endl;
+		}
+		float meanZ0 = 0;
+		start = meanZ.size()/4;
+		finish = meanZ.size()*3/4;
+		for (int i = start; i < finish; ++i) {
+			meanZ0 += meanZ.at(i);
+		}
+		float mZ = meanZ0*2/meanZ.size();
+		cout << mX << "-------" << mZ << endl;//####
+
+
+		vector<Scalar> movements;*/
+		//cout << "CP::" << Scalar(dX, dY, dZ ) << endl;
+
+		//-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist,
+		//-- or a small arbitary value ( 0.02 ) in the event that min_dist is very
+		//-- small)
+		//-- PS.- radiusMatch can also be used here.
+		//std::vector< DMatch > good_matches;
+
+		//for( int i = 0; i < descriptors_1.rows; i++ ){
+			//if( matches[i].distance <= max(2*min_dist, 0.02) ){
+
+			//}
+		//}
+
+		//-- Draw only "good" matches
+		//Mat img_matches;
+		/*
+		drawMatches( img_1, keypoints_1, img_2, keypoints_2,
+				   matches, img_matches, Scalar::all(-1), Scalar::all(-1),
+				   vector<char>(), DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
+		*/
+		//-- Show detected matches
+		//drawKeypoints(img_1,keypoints_1,img_matches,Scalar(255,0,0));
+		//drawKeypoints(img_matches,keypoints_2,img_matches,Scalar(0,255,0));
+		//imshow( "Good Matches", img_2 );
+
+		//for( int i = 0; i < (int)good_matches.size(); i++ )	{
+			//printf( "-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d  \n", i, good_matches[i].queryIdx, good_matches[i].trainIdx );
+		//}
+
+		cout << "MATCHES..........................." << good_matches.size() << endl;//#####
+		imshow("imfi0", img_1);//#####
+		imshow("imfi3", img_2);//#####
+		waitKey(0);
+
+
+		//waitKey(0);
+		if(good_matches.size() < 200){
+			return true;
+		}
+	}
+	return false;
+}
 
 } /* namespace aire */

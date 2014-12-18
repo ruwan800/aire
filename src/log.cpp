@@ -150,7 +150,7 @@ void Log::setMainProcessProgress(int progress){
 void Log::setSubProcessProgress(int progress){
 	subProcess.progress = progress;
 	if(progress%10 == 0){
-		std::cout << "project progress::" << progress << std::endl;//####
+		std::cout << "project progress::" << progress/25/60 << ":" << (progress/25)%60 << std::endl;//####
 		//Log::i("::progress", "");
 	}
 }

@@ -7,6 +7,8 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/features2d/features2d.hpp>
+#include <opencv2/nonfree/features2d.hpp>
 #include "video.h"
 #include "camera_motion.h"
 #include "log.h"
@@ -26,6 +28,7 @@ public:
 	void createCameraMotionImages(const char*);
 	void loadCameraMotionFromFile(const char*);
 	void createCameraMotionGraphs();
+	bool isNotSimilar(vector<cv::Mat> images);
 private:
 	Video video;
 	Log* LOG;
